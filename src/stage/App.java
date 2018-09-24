@@ -1,3 +1,4 @@
+package stage;
 /**
  * Sample Project for SWEN20003: Object Oriented Software Development 2018
  * by Eleanor McMurtry, University of Melbourne
