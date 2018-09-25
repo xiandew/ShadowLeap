@@ -1,3 +1,4 @@
+package stage;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
@@ -7,23 +8,13 @@ public abstract class Sprite {
 	
 	private Image image;
 	private float x, y;
-	private BoundingBox bb;
-	/**
-	 * Constructor for the player and the buses. Coordinates are
-	 * needed for initial position.
-	 */
-	public Sprite(String imageSrc, float x, float y) throws SlickException {
-		// Why would the constructor need a path to an image, and a coordinate?
+	private BoundingBox bounds;
+	
+	public Sprite(String imageSrc, float x, float y)
+			throws SlickException {
 		this.setImage(new Image(imageSrc));
 		this.setX(x);
 		this.setY(y);
-	}
-	
-	/**
-	 * Constructor for tiles. No need of coordinates since they are still.
-	 */
-	public Sprite(String imageSrc) throws SlickException {
-		this.setImage(new Image(imageSrc));
 	}
 	
 	/**
@@ -65,10 +56,24 @@ public abstract class Sprite {
 	 * @param y the y to set
 	 */
 	public void setY(float y) {
-		if(y < 0 || y >= App.SCREEN_HEIGHT) {
+		if(y < 0) {
 			return;
 		}
 		this.y = y;
+	}
+
+	/**
+	 * @return the bounds
+	 */
+	public BoundingBox getBounds() {
+		return bounds;
+	}
+
+	/**
+	 * @param bounds the bounds to set
+	 */
+	public void setBounds(BoundingBox bounds) {
+		this.bounds = bounds;
 	}
 	
 	/**
@@ -84,16 +89,10 @@ public abstract class Sprite {
 	 * Decide whether two sprites collide. Exit the game if collide happens.
 	 * @param other The other sprite
 	 */
-	public void contactSprite(Sprite other) {
-		// Should be called when one sprite makes contact with another. 
-		
-		this.bb = new BoundingBox(this.getImage(), this.getX(), this.getY());
-		
-		if(this.bb.intersects(
-				new BoundingBox(other.getImage(), other.getX(), other.getY()))) {
-			System.exit(0);
-		}
-		
+	public boolean collides(Sprite other) {
+		this.setBounds(new BoundingBox(this.getImage(), this.getX(), this.getY()));
+		BoundingBox otherBounds = new BoundingBox(other.getImage(), other.getX(), other.getY());
+		return this.getBounds().intersects(otherBounds);
 	}
 	
 }
