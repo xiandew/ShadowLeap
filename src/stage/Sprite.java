@@ -9,12 +9,17 @@ public abstract class Sprite {
 	private Image image;
 	private float x, y;
 	private BoundingBox bounds;
+	private boolean isHazard;
 	
-	public Sprite(String imageSrc, float x, float y)
-			throws SlickException {
-		this.setImage(new Image(imageSrc));
-		this.setX(x);
-		this.setY(y);
+	public Sprite(String imageSrc, float x, float y, boolean isHazard) {
+		try {
+			this.image = new Image(imageSrc);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+		this.x = x;
+		this.y = y;
+		this.isHazard = isHazard;
 	}
 	
 	/**
@@ -22,13 +27,6 @@ public abstract class Sprite {
 	 */
 	public Image getImage() {
 		return image;
-	}
-
-	/**
-	 * @param image the image to set
-	 */
-	public void setImage(Image image) {
-		this.image = image;
 	}
 	
 	/**
@@ -56,43 +54,34 @@ public abstract class Sprite {
 	 * @param y the y to set
 	 */
 	public void setY(float y) {
-		if(y < 0) {
+		if(y >= App.SCREEN_HEIGHT) {
 			return;
 		}
 		this.y = y;
 	}
-
+	
 	/**
-	 * @return the bounds
+	 * @return the isHazard
 	 */
-	public BoundingBox getBounds() {
-		return bounds;
-	}
-
-	/**
-	 * @param bounds the bounds to set
-	 */
-	public void setBounds(BoundingBox bounds) {
-		this.bounds = bounds;
+	public boolean ifHazard() {
+		return isHazard;
 	}
 	
 	/**
-	 * This render is for showing the movement of the player
-	 * and buses
+	 * Draw the sprite
 	 */
 	public void render() {
-		// This should be pretty simple.
 		this.getImage().drawCentered(this.getX(), this.getY());
 	}
 	
 	/**
-	 * Decide whether two sprites collide. Exit the game if collide happens.
+	 * Decide whether two sprites collide.
 	 * @param other The other sprite
 	 */
 	public boolean collides(Sprite other) {
-		this.setBounds(new BoundingBox(this.getImage(), this.getX(), this.getY()));
-		BoundingBox otherBounds = new BoundingBox(other.getImage(), other.getX(), other.getY());
-		return this.getBounds().intersects(otherBounds);
+		bounds = new BoundingBox(this.image, this.x, this.y);
+		BoundingBox otherBounds =
+				new BoundingBox(other.getImage(), other.getX(), other.getY());
+		return bounds.intersects(otherBounds);
 	}
-	
 }

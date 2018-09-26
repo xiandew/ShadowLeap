@@ -1,5 +1,4 @@
 package stage;
-import org.newdawn.slick.SlickException;
 
 public class Bus extends Vehicle {
 	
@@ -12,7 +11,7 @@ public class Bus extends Vehicle {
 	/**
 	 * Initialise a bus with moving direction at (x, y).
 	 */
-	public Bus(float x, float y, int direction) throws SlickException {
+	public Bus(float x, float y, int direction) {
 		super(BUS_SRC, x, y, SPEED, direction, HAZARD);
 	}
 }
