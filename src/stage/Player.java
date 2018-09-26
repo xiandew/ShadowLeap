@@ -24,18 +24,19 @@ public class Player extends Sprite implements Movable {
 	private int lives;
 	private Image livesImg = new Image(LIVES_SRC);
 	
-	private boolean isRiding;
+	private Sprite ridingVessel;
 	
 	public Player() throws SlickException {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y, HAZARD);
 		this.lives = INITIAL_LIVES;
-		this.isRiding = false;
+		this.setRidingVessel(null);
 	}
 	
 	public void render() {
 		super.render();
 		for(int i=0; i<lives; i++) {
-			livesImg.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
+			livesImg.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i,
+															INITIAL_LIVES_Y);
 		}
 	}
 	
@@ -74,10 +75,11 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	private void checkState() {
-		if(this.lives == 0) {
+		if(this.lives <= 0) {
 			System.exit(0);
 		}
-		if(this.getX() < 0 || this.getX() > App.SCREEN_WIDTH) {
+		if(this.getX() < World.TILE_WIDTH/2 ||
+				this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			dieOnce();
 		}
 	}
@@ -93,17 +95,16 @@ public class Player extends Sprite implements Movable {
 	}
 
 	/**
-	 * @return the isRiding
+	 * @return the ridingVessel
 	 */
-	public boolean ifRiding() {
-		return isRiding;
+	public Sprite getRidingVessel() {
+		return ridingVessel;
 	}
 
 	/**
-	 * @param isRiding the isRiding to set
+	 * @param ridingVessel the ridingVessel to set
 	 */
-	public void setRiding(boolean isRiding) {
-		this.isRiding = isRiding;
+	public void setRidingVessel(Sprite ridingVessel) {
+		this.ridingVessel = ridingVessel;
 	}
-	
 }

@@ -8,22 +8,25 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class World {
-	/** sprite width, in pixels */
+	// sprite width, in pixels
 	public static final int TILE_WIDTH = 48;
 	
-	// data indexes
+	//level data
+	private static final String FIRST_LEVEL_DATA = "assets/levels/0.lvl";
+	private static final String SECOND_LEVEL_DATA = "assets/levels/1.lvl";
+	
+	// level data indexes
 	private static final int INDEX_OBJECT = 0;
 	private static final int INDEX_X = 1;
 	private static final int INDEX_Y = 2;
 	private static final int INDEX_DIRECTION = 3;
 	
 	private static final int NUM_HOLES = 5;
-	private static final int FIRST_HOLE_XOFFSET = 72;
 	
 	private int currentLevel;
 	private String currentLevelData;
+	
 	private int numFilledHoles;
-	private boolean[] filledHoles;
 	
 	private static Player player;
 	
@@ -33,20 +36,39 @@ public class World {
 		// Perform initialisation logic
 		
 		currentLevel = 0;
-		currentLevelData = "assets/levels/0.lvl";
-		numFilledHoles = 0;
-		filledHoles = new boolean[NUM_HOLES];
-		Arrays.fill(filledHoles, false);
+		currentLevelData = FIRST_LEVEL_DATA;
 		
-		readData();
+		numFilledHoles = 0;
+		
+		readLevelData();
 		
 		/** create the player */
 		player = new Player();
 		sprites.add(player);
 	}
 	
-	public void update(Input input, int delta) {
-		// Update all of the sprites in the game
+	public void update(Input input, int delta) {	
+		
+		// check whether the player is riding
+		for(Sprite sprite : sprites) {
+			if(sprite instanceof Vessel && player.collides(sprite)) {
+				player.setRidingVessel(sprite);
+			}
+		}
+		
+		// check for hazard and non-hazard collisions
+		for(Sprite sprite : sprites) {
+			if(sprite != player && player.collides(sprite)) {
+				if(sprite.ifHazard() && player.getRidingVessel() == null) {
+					player.dieOnce();
+				}
+				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+					((Vehicle)sprite).setContact(true);
+				}
+			}else if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+				((Vehicle)sprite).setContact(false);
+			}
+		}
 		
 		// Update the movement of the player
 		player.move(input, delta);
@@ -56,26 +78,6 @@ public class World {
 		for(Sprite sprite : sprites) {
 			if(sprite instanceof Vehicle) {
 				((Vehicle)sprite).move(input, delta);
-			}
-		}
-		
-		// check whether the player is riding
-		for(Sprite sprite : sprites) {
-			if(sprite instanceof Vessel && player.collides(sprite)) {
-				player.setRiding(true);
-			}
-		}
-		
-		for(Sprite sprite : sprites) {
-			if(sprite != player && player.collides(sprite)) {
-				if(sprite.ifHazard() && !player.ifRiding()) {
-					player.dieOnce();
-				}
-				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
-					((Vehicle)sprite).setContact(true);
-				}
-			} else if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
-				((Vehicle)sprite).setContact(false);
 			}
 		}
 		
@@ -97,7 +99,7 @@ public class World {
 		if(currentLevel > 1) {
 			System.exit(0);
 		}
-		currentLevelData = "assets/levels/1.lvl";
+		currentLevelData = SECOND_LEVEL_DATA;
 	}
 	
 	/**
@@ -107,20 +109,18 @@ public class World {
 		return player;
 	}
 	
-	private void readData() {
+	private void readLevelData() {
 		sprites = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new FileReader(currentLevelData))) {
+		try (BufferedReader br =
+				new BufferedReader(new FileReader(currentLevelData))) {
 			
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split(",");
+				
 				int x = Integer.parseInt(data[INDEX_X]);
 				int y = Integer.parseInt(data[INDEX_Y]);
-				
-				int direction = 0;
-				try {
-					direction = Boolean.parseBoolean(data[INDEX_DIRECTION]) ? 1 : -1;
-				} catch(ArrayIndexOutOfBoundsException e) {}
+				Integer direction = parseDirection(data);
 				
 				switch(data[INDEX_OBJECT]) {
 					case("water"):
@@ -158,5 +158,13 @@ public class World {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	private Integer parseDirection(String[] data) {
+		try {
+			return Boolean.parseBoolean(data[INDEX_DIRECTION]) ? 1 : -1;
+		} catch(ArrayIndexOutOfBoundsException e) {
+			return null;
+		}
+		
 	}
 }

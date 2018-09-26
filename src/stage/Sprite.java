@@ -13,9 +13,9 @@ public abstract class Sprite {
 	
 	public Sprite(String imageSrc, float x, float y, boolean isHazard)
 			throws SlickException {
-		this.setImage(new Image(imageSrc));
-		this.setX(x);
-		this.setY(y);
+		this.image = new Image(imageSrc);
+		this.x = x;
+		this.y = y;
 		this.isHazard = isHazard;
 	}
 	
@@ -24,13 +24,6 @@ public abstract class Sprite {
 	 */
 	public Image getImage() {
 		return image;
-	}
-
-	/**
-	 * @param image the image to set
-	 */
-	public void setImage(Image image) {
-		this.image = image;
 	}
 	
 	/**
@@ -63,19 +56,12 @@ public abstract class Sprite {
 		}
 		this.y = y;
 	}
-
+	
 	/**
-	 * @return the bounds
+	 * @return the isHazard
 	 */
-	public BoundingBox getBounds() {
-		return bounds;
-	}
-
-	/**
-	 * @param bounds the bounds to set
-	 */
-	public void setBounds(BoundingBox bounds) {
-		this.bounds = bounds;
+	public boolean ifHazard() {
+		return isHazard;
 	}
 	
 	/**
@@ -92,15 +78,9 @@ public abstract class Sprite {
 	 * @param other The other sprite
 	 */
 	public boolean collides(Sprite other) {
-		this.setBounds(new BoundingBox(this.getImage(), this.getX(), this.getY()));
-		BoundingBox otherBounds = new BoundingBox(other.getImage(), other.getX(), other.getY());
-		return this.getBounds().intersects(otherBounds);
+		bounds = new BoundingBox(this.image, this.x, this.y);
+		BoundingBox otherBounds =
+				new BoundingBox(other.getImage(), other.getX(), other.getY());
+		return bounds.intersects(otherBounds);
 	}
-
-	/**
-	 * @return the isHazard
-	 */
-	public boolean ifHazard() {
-		return isHazard;
-	}	
 }
