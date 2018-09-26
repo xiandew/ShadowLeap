@@ -2,7 +2,6 @@ package stage;
 import utilities.Movable;
 
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 
 public abstract class Vehicle extends Sprite implements Movable {
 	
@@ -17,8 +16,8 @@ public abstract class Vehicle extends Sprite implements Movable {
 	 * Initialise a vehicle with moving direction at (x, y).
 	 * @throws SlickException 
 	 */
-	public Vehicle(String vehicleSrc, float x, float y, float speed,
-						int direction, boolean isHazard) throws SlickException {
+	public Vehicle(String vehicleSrc, float x, float y,
+							float speed, int direction, boolean isHazard) {
 		super(vehicleSrc, x, y, isHazard);
 		this.speed = speed;
 		this.direction = direction;

@@ -2,10 +2,8 @@ package stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 
 public class World {
 	// sprite width, in pixels
@@ -23,6 +21,8 @@ public class World {
 	
 	private static final int NUM_HOLES = 5;
 	
+	private static final int ROUND_ERROR = 5;
+	
 	private int currentLevel;
 	private String currentLevelData;
 	
@@ -32,7 +32,7 @@ public class World {
 	
 	private ArrayList<Sprite> sprites;	
 	
-	public World() throws SlickException {
+	public World() {
 		// Perform initialisation logic
 		
 		currentLevel = 0;
@@ -62,7 +62,14 @@ public class World {
 				if(sprite.ifHazard() && player.getRidingVessel() == null) {
 					player.dieOnce();
 				}
-				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+				
+				// Only push the player if it is on the right of the bulldozer
+				if(sprite instanceof Bulldozer &&
+					player.getX() - sprite.getX() > TILE_WIDTH - ROUND_ERROR) {
+					((Vehicle)sprite).setContact(true);
+				}
+				
+				if(sprite instanceof Vessel) {
 					((Vehicle)sprite).setContact(true);
 				}
 			}else if(sprite instanceof Bulldozer || sprite instanceof Vessel) {

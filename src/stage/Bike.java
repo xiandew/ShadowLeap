@@ -1,5 +1,4 @@
 package stage;
-import org.newdawn.slick.SlickException;
 
 public class Bike extends Vehicle {
 	
@@ -11,7 +10,7 @@ public class Bike extends Vehicle {
 	private static final int LEFT_END = 24;
 	private static final int RIGHT_END = 1000;
 	
-	public Bike(float x, float y, int direction) throws SlickException {
+	public Bike(float x, float y, int direction) {
 		super(BIKE_SRC, x, y, SPEED, direction, HAZARD);
 	}
 	

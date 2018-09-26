@@ -1,7 +1,5 @@
 package stage;
 
-import org.newdawn.slick.SlickException;
-
 public class Hole extends Sprite {
 	
 	private static final String FROG_SRC = "assets/frog.png";
@@ -13,7 +11,7 @@ public class Hole extends Sprite {
 	private static final int FIRST_HOLE_BOTTOM = 72;
 	private static final int FIRST_HOLE_XOFFSET = 72;
 	
-	public Hole(float x, float y) throws SlickException {
+	public Hole(float x, float y) {
 		super(FROG_SRC, x, y, HAZARD);
 	}
 	

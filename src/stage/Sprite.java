@@ -11,9 +11,12 @@ public abstract class Sprite {
 	private BoundingBox bounds;
 	private boolean isHazard;
 	
-	public Sprite(String imageSrc, float x, float y, boolean isHazard)
-			throws SlickException {
-		this.image = new Image(imageSrc);
+	public Sprite(String imageSrc, float x, float y, boolean isHazard) {
+		try {
+			this.image = new Image(imageSrc);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
 		this.x = x;
 		this.y = y;
 		this.isHazard = isHazard;
