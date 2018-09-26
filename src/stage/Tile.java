@@ -1,10 +1,9 @@
 package stage;
 import org.newdawn.slick.SlickException;
 
-public class Tile extends Sprite {
+public abstract class Tile extends Sprite {
 	
-	public Tile(String imageSrc, float x, float y) throws SlickException {
-		super(imageSrc, x, y);
+	public Tile(String imageSrc, float x, float y, boolean isHazard) throws SlickException {
+		super(imageSrc, x, y, isHazard);
 	}
-
 }

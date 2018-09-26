@@ -10,9 +10,5 @@ public class Log extends Vessel {
 	public Log(float x, float y, int direction) throws SlickException {
 		super(LOG_SRC, x, y, SPEED, direction);
 	}
-	
-	public void carry() {
-		
-	}
 
 }

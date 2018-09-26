@@ -9,12 +9,14 @@ public abstract class Sprite {
 	private Image image;
 	private float x, y;
 	private BoundingBox bounds;
+	private boolean isHazard;
 	
-	public Sprite(String imageSrc, float x, float y)
+	public Sprite(String imageSrc, float x, float y, boolean isHazard)
 			throws SlickException {
 		this.setImage(new Image(imageSrc));
 		this.setX(x);
 		this.setY(y);
+		this.isHazard = isHazard;
 	}
 	
 	/**
@@ -56,7 +58,7 @@ public abstract class Sprite {
 	 * @param y the y to set
 	 */
 	public void setY(float y) {
-		if(y < 0) {
+		if(y >= App.SCREEN_HEIGHT) {
 			return;
 		}
 		this.y = y;
@@ -94,5 +96,11 @@ public abstract class Sprite {
 		BoundingBox otherBounds = new BoundingBox(other.getImage(), other.getX(), other.getY());
 		return this.getBounds().intersects(otherBounds);
 	}
-	
+
+	/**
+	 * @return the isHazard
+	 */
+	public boolean ifHazard() {
+		return isHazard;
+	}	
 }

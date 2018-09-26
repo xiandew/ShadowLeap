@@ -1,4 +1,5 @@
 package stage;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
@@ -6,29 +7,43 @@ import utilities.Movable;
 
 public class Player extends Sprite implements Movable {
 	
-	public static final String PLAYER_SRC = "assets/frog.png";
+	private static final String PLAYER_SRC = "assets/frog.png";
+	private static final String LIVES_SRC = "assets/lives.png";
 	
 	/** starting point of the player */
 	private static final int INITIAL_X = 512;
 	private static final int INITIAL_Y = 720;
 	private static final int INITIAL_LIVES = 3;
 	
+	private static final int INITIAL_LIVES_X = 24;
+	private static final int INITIAL_LIVES_Y = 744;
+	private static final int LIVES_SEPARATION = 32;
+	
+	private static final boolean HAZARD = false;
+	
 	private int lives;
+	private Image livesImg = new Image(LIVES_SRC);
+	
+	private boolean isRiding;
 	
 	public Player() throws SlickException {
-		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
+		super(PLAYER_SRC, INITIAL_X, INITIAL_Y, HAZARD);
 		this.lives = INITIAL_LIVES;
+		this.isRiding = false;
 	}
 	
 	public void render() {
 		super.render();
+		for(int i=0; i<lives; i++) {
+			livesImg.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
+		}
 	}
 	
 	/**
 	 * Validate the x before update.
 	 */
 	public float validateX(float x) {
-		if(x < 0 || x > App.SCREEN_WIDTH) {
+		if(x <= 0 || x >= App.SCREEN_WIDTH) {
 			return getX();
 		}
 		return x;
@@ -51,10 +66,10 @@ public class Player extends Sprite implements Movable {
 			setX(validateX(getX() + World.TILE_WIDTH));
 		}
 		if(input.isKeyPressed(Input.KEY_UP)) {			
-			setX(getY() - World.TILE_WIDTH);
+			setY(getY() - World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			setX(getY() + World.TILE_WIDTH);
+			setY(getY() + World.TILE_WIDTH);
 		}
 	}
 	
@@ -75,6 +90,20 @@ public class Player extends Sprite implements Movable {
 	public void dieOnce() {
 		this.lives--;
 		this.resetPosition();
+	}
+
+	/**
+	 * @return the isRiding
+	 */
+	public boolean ifRiding() {
+		return isRiding;
+	}
+
+	/**
+	 * @param isRiding the isRiding to set
+	 */
+	public void setRiding(boolean isRiding) {
+		this.isRiding = isRiding;
 	}
 	
 }

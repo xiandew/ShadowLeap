@@ -10,9 +10,6 @@ import org.newdawn.slick.SlickException;
 public class World {
 	/** sprite width, in pixels */
 	public static final int TILE_WIDTH = 48;
-	private static final String WATERTILE_SRC = "assets/water.png";
-	private static final String GRASSTILE_SRC = "assets/grass.png";
-	private static final String TREETILE_SRC = "assets/tree.png";
 	
 	// data indexes
 	private static final int INDEX_OBJECT = 0;
@@ -23,11 +20,6 @@ public class World {
 	private static final int NUM_HOLES = 5;
 	private static final int FIRST_HOLE_XOFFSET = 72;
 	
-	// the top row of the water tiles
-	private static final int WATER_TOP = 96;
-	// the bottom row of the water tiles
-	private static final int WATER_BOTTOM = 336;
-	
 	private int currentLevel;
 	private String currentLevelData;
 	private int numFilledHoles;
@@ -35,19 +27,7 @@ public class World {
 	
 	private static Player player;
 	
-	// for rendering
-	private ArrayList<Sprite> sprites;
-	
-	private ArrayList<Tile> treeTiles;
-	// All non-rideable vehicles
-	private ArrayList<Vehicle> landVehicles;
-	
-	// All rideable vessels
-	private ArrayList<Vessel> vessels;
-	
-	// for extra life
-	private ArrayList<Vessel> logs;
-	
+	private ArrayList<Sprite> sprites;	
 	
 	public World() throws SlickException {
 		// Perform initialisation logic
@@ -58,87 +38,11 @@ public class World {
 		filledHoles = new boolean[NUM_HOLES];
 		Arrays.fill(filledHoles, false);
 		
-		sprites = new ArrayList<>();
-		treeTiles = new ArrayList<>();
-		landVehicles = new ArrayList<>();
-		vessels = new ArrayList<>();
-		logs = new ArrayList<>();
-		
-		try (BufferedReader br = new BufferedReader(new FileReader(currentLevelData))) {
-			
-			String line;
-			while ((line = br.readLine()) != null) {
-				String[] data = line.split(",");
-				int x = Integer.parseInt(data[INDEX_X]);
-				int y = Integer.parseInt(data[INDEX_Y]);
-				int direction = 0;
-				
-				try {
-					direction = Boolean.parseBoolean(data[INDEX_DIRECTION]) ? 1 : -1;
-				} catch(ArrayIndexOutOfBoundsException e) {}
-				
-				switch(data[INDEX_OBJECT]) {
-					case("water"):
-						Tile waterTile = new Tile(WATERTILE_SRC, x, y);
-						sprites.add(waterTile);
-						break;
-					case("grass"):
-						sprites.add(new Tile(GRASSTILE_SRC, x, y));
-						break;
-					case("tree"):
-						Tile treeTile = new Tile(TREETILE_SRC, x, y);
-						sprites.add(treeTile);
-						treeTiles.add(treeTile);
-						break;
-					case("bus"):
-						Bus bus = new Bus(x, y, direction);
-						sprites.add(bus);
-						landVehicles.add(bus);
-						break;
-					case("bulldozer"):
-						Bulldozer bulldozer = new Bulldozer(x, y, direction);
-						sprites.add(bulldozer);
-						landVehicles.add(bulldozer);
-						break;
-					case("bike"):
-						Bike bike = new Bike(x, y, direction);
-						sprites.add(bike);
-						landVehicles.add(bike);
-						break;
-					case("racecar"):
-						Racecar racecar = new Racecar(x, y, direction);
-						sprites.add(racecar);
-						landVehicles.add(racecar);
-						break;
-					case("log"):
-						Log log = new Log(x, y, direction);
-						sprites.add(log);
-						vessels.add(log);
-						logs.add(log);
-						break;
-					case("longLog"):
-						LongLog longLog = new LongLog(x, y, direction);
-						sprites.add(longLog);
-						vessels.add(longLog);
-						logs.add(longLog);
-						break;
-					case("turtles"):
-						Turtles turtles = new Turtles(x, y, direction);
-						sprites.add(turtles);
-						vessels.add(turtles);
-						break;
-				}
-				
-				
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		readData();
 		
 		/** create the player */
 		player = new Player();
 		sprites.add(player);
-		
 	}
 	
 	public void update(Input input, int delta) {
@@ -147,43 +51,32 @@ public class World {
 		// Update the movement of the player
 		player.move(input, delta);
 		
-		for(Vehicle vehicle : this.landVehicles) {
-			vehicle.move(input, delta);
-		}
-		for(Vessel vessel : this.vessels) {
-			vessel.move(input, delta);
-		}
+		//ExtraLife.move(input, delta);
 		
-		// Update the movement of vehicles and check whether any vehicle collides the player
-		if(player.getY() > WATER_BOTTOM) {
-			for(Vehicle vehicle : landVehicles) {
-				if(player.collides(vehicle)) {
-					if(vehicle.ifHazard()) {
-						player.dieOnce();
-					}else {
-						vehicle.setContact(true);
-					}
-				}else {
-					vehicle.setContact(false);
-				}
+		for(Sprite sprite : sprites) {
+			if(sprite instanceof Vehicle) {
+				((Vehicle)sprite).move(input, delta);
 			}
 		}
 		
-		// when above the water
-		if(player.getY() >= WATER_TOP && player.getY() <= WATER_BOTTOM) {
-			for(Vessel vessel : vessels) {
-				if(!vessel.ifContact()) {
-					player.dieOnce();
-				}
+		// check whether the player is riding
+		for(Sprite sprite : sprites) {
+			if(sprite instanceof Vessel && player.collides(sprite)) {
+				player.setRiding(true);
 			}
 		}
 		
-		if(player.getY() < WATER_TOP) {
-			for(Tile treeTile : treeTiles) {
-				if(player.collides(treeTile)) {
+		for(Sprite sprite : sprites) {
+			if(sprite != player && player.collides(sprite)) {
+				if(sprite.ifHazard() && !player.ifRiding()) {
 					player.dieOnce();
 				}
-			}			
+				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+					((Vehicle)sprite).setContact(true);
+				}
+			} else if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+				((Vehicle)sprite).setContact(false);
+			}
 		}
 		
 		if(numFilledHoles == NUM_HOLES) {
@@ -213,11 +106,57 @@ public class World {
 	public static Player getPlayer() {
 		return player;
 	}
-
-	/**
-	 * @param player the player to set
-	 */
-	public void setPlayer(Player player) {
-		World.player = player;
+	
+	private void readData() {
+		sprites = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new FileReader(currentLevelData))) {
+			
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] data = line.split(",");
+				int x = Integer.parseInt(data[INDEX_X]);
+				int y = Integer.parseInt(data[INDEX_Y]);
+				
+				int direction = 0;
+				try {
+					direction = Boolean.parseBoolean(data[INDEX_DIRECTION]) ? 1 : -1;
+				} catch(ArrayIndexOutOfBoundsException e) {}
+				
+				switch(data[INDEX_OBJECT]) {
+					case("water"):
+						sprites.add(new WaterTile(x, y));
+						break;
+					case("grass"):
+						sprites.add(new GrassTile(x, y));
+						break;
+					case("tree"):
+						sprites.add(new TreeTile(x, y));
+						break;
+					case("bus"):
+						sprites.add(new Bus(x, y, direction));
+						break;
+					case("bulldozer"):
+						sprites.add(new Bulldozer(x, y, direction));
+						break;
+					case("bike"):
+						sprites.add(new Bike(x, y, direction));
+						break;
+					case("racecar"):
+						sprites.add(new Racecar(x, y, direction));
+						break;
+					case("log"):
+						sprites.add(new Log(x, y, direction));
+						break;
+					case("longLog"):
+						sprites.add(new LongLog(x, y, direction));
+						break;
+					case("turtles"):
+						sprites.add(new Turtles(x, y, direction));
+						break;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
