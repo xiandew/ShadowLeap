@@ -18,7 +18,7 @@ public class ExtraLife extends Sprite implements Movable{
 	private static final int LIFETIME = 14;
 	private static final int PAUSE = 2;
 	
-	private long sinceAppear = 0;
+	private long timeSinceAppear = 0;
 	private float relativeX = 0;
 		
 	private static Random random = new Random();
@@ -49,16 +49,22 @@ public class ExtraLife extends Sprite implements Movable{
 				logs.add(sprite);
 			}
 		}
+		System.out.println(logs.size());
 		return (Vehicle) logs.get(random.nextInt(logs.size()));
 	}
 	
 	public void render() {
-		if(Math.round((System.nanoTime() - startTime) / TO_SEC) >= waitTime) {
-			World.setNextExtraLife(new ExtraLife());
+		long timeSinceStart =
+				Math.round((System.nanoTime() - startTime) / TO_SEC);
+		if(timeSinceStart >= waitTime) {
+			if(World.getNextExtraLife() == null ||
+					World.getExtraLife() == World.getNextExtraLife()) {
+				World.setNextExtraLife(new ExtraLife());
+			}
 			super.render();
 		}
-		if(Math.round((System.nanoTime() - startTime) / TO_SEC) >=
-														waitTime + LIFETIME) {
+		if(timeSinceStart >= waitTime + LIFETIME &&
+				World.getExtraLife() != World.getNextExtraLife()) {
 			World.setExtraLife(World.getNextExtraLife());
 		}
 	}
@@ -81,9 +87,9 @@ public class ExtraLife extends Sprite implements Movable{
 			return;
 		}
 		
-		if(appearTime % PAUSE == 0 && appearTime != sinceAppear){
+		if(appearTime % PAUSE == 0 && appearTime != timeSinceAppear){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
-			sinceAppear = appearTime;
+			timeSinceAppear = appearTime;
 		}
 		
 		setX(ridingLog.getX() + relativeX);

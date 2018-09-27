@@ -131,6 +131,10 @@ public class World {
 		return player;
 	}
 	
+	public static ExtraLife getExtraLife() {
+		return extraLife;
+	}
+	
 	public static void setExtraLife(ExtraLife extraLife) {
 		World.extraLife = extraLife;
 	}
