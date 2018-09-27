@@ -21,21 +21,19 @@ public class Player extends Sprite implements Movable {
 	
 	private static final boolean HAZARD = false;
 	
-	private int lives;
+	private int lives = INITIAL_LIVES;
 	private Image livesImg;
 	
-	private Sprite ridingVessel;
+	private Sprite ridingVessel = null;
 	private Player safeGuard;
 	
 	public Player() {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y, HAZARD);
-		this.lives = INITIAL_LIVES;
 		try {
 			this.livesImg = new Image(LIVES_SRC);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-		this.setRidingVessel(null);
 	}
 	
 	public Player(Player player) {
@@ -114,7 +112,7 @@ public class Player extends Sprite implements Movable {
 		
 	}
 	
-	private void resetPosition() {
+	public void resetPosition() {
 		this.setX(INITIAL_X);
 		this.setY(INITIAL_Y);
 	}
@@ -122,6 +120,10 @@ public class Player extends Sprite implements Movable {
 	public void dieOnce() {
 		this.lives--;
 		this.resetPosition();
+	}
+	
+	public void getExtraLife() {
+		this.lives++;
 	}
 	
 	/**

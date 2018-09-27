@@ -68,16 +68,14 @@ public abstract class Sprite {
 	}
 	
 	/**
-	 * This render is for showing the movement of the player
-	 * and buses
+	 * Draw the sprite
 	 */
 	public void render() {
-		// This should be pretty simple.
 		this.getImage().drawCentered(this.getX(), this.getY());
 	}
 	
 	/**
-	 * Decide whether two sprites collide. Exit the game if collide happens.
+	 * Decide whether two sprites collide.
 	 * @param other The other sprite
 	 */
 	public boolean collides(Sprite other) {

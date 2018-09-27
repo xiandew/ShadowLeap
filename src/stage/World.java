@@ -6,54 +6,54 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class World {
-	// sprite width, in pixels
+	/** sprite width, in pixels */
 	public static final int TILE_WIDTH = 48;
 	
-	private static final int NUM_HOLES = 5;	
+	public static final int NUM_HOLES = 5;
 	
-	//level data
+	/** level data */
 	private static final String FIRST_LEVEL_DATA = "assets/levels/0.lvl";
 	private static final String SECOND_LEVEL_DATA = "assets/levels/1.lvl";
 	
-	// level data indexes
+	/**level data indexes*/
 	private static final int INDEX_OBJECT = 0;
 	private static final int INDEX_X = 1;
 	private static final int INDEX_Y = 2;
 	private static final int INDEX_DIRECTION = 3;
 	
-	private int currentLevel;
-	private String currentLevelData;
+	private int currentLevel = 0;
+	private String currentLevelData = FIRST_LEVEL_DATA;
 	
-	private int numFilledHoles;
+	/** containing all except the player and extra life */
+	private static ArrayList<Sprite> sprites;
 	
 	private static Player player;
-	private static ArrayList<Sprite> sprites;	
+	private static ExtraLife extraLife;
+	private static ExtraLife nextExtraLife;
 	
 	public World() {
-		// Perform initialisation logic
-		
-		currentLevel = 0;
-		currentLevelData = FIRST_LEVEL_DATA;
-		
-		numFilledHoles = 0;
-		
 		readLevelData();
-		
-		/** create the player */
+		Hole.initialHoles();
 		player = new Player();
-		sprites.add(player);
+		extraLife = new ExtraLife();
 	}
 	
-	public void update(Input input, int delta) {	
+	public void update(Input input, int delta) {
 		
-		// check whether the player is riding
+		/** Update the movement of the player */
+		player.move(input, delta);
+		
+		/** Update the movement of the extra life */
+		extraLife.move(input, delta);
+		
+		/** check whether the player is riding */
 		for(Sprite sprite : sprites) {
 			if(sprite instanceof Vessel && player.collides(sprite)) {
 				player.setRidingVessel(sprite);
 			}
 		}
 		
-		// check for hazard and non-hazard collisions
+		/** check for hazard and non-hazard collisions */
 		for(Sprite sprite : sprites) {
 			if(sprite != player && sprite.collides(player)) {
 				if(sprite.ifHazard() && player.getRidingVessel() == null) {
@@ -65,41 +65,63 @@ public class World {
 					((Vehicle)sprite).setContact(true);
 				}
 				
+				if(sprite instanceof Hole) {
+					((Hole)sprite).setfilled();
+				}
+				
 			}else if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
 				((Vehicle)sprite).setContact(false);
 			}
 		}
 		
-		// Update the movement of the player
-		player.move(input, delta);
+		// check whether hitting the extra life
+		if(player.collides(extraLife) && extraLife != nextExtraLife) {
+			extraLife = nextExtraLife;
+			player.getExtraLife();
+		}
 		
-		//ExtraLife.move(input, delta);
-		
+		/** Update the movements of sprites except the player and extra life */
 		for(Sprite sprite : sprites) {
 			if(sprite instanceof Vehicle) {
 				((Vehicle)sprite).move(input, delta);
 			}
 		}
 		
-		if(numFilledHoles == NUM_HOLES) {
+		/** level up when all of the holes are filled */
+		if(Hole.getNumFilledHoles() == NUM_HOLES) {
 			levelUp();
 		}
 		
 	}
 	
 	public void render(Graphics g) {
-		// Draw all of the sprites in the game
 		for(Sprite sprite: sprites) {
 			sprite.render();
 		}
+		player.render();
+		extraLife.render();
 	}
-
+	
+	/** change the level data. Exit if the second level completed */
 	private void levelUp() {
 		currentLevel++;
 		if(currentLevel > 1) {
 			System.exit(0);
 		}
 		currentLevelData = SECOND_LEVEL_DATA;
+		
+		readLevelData();
+		Hole.resetNumFilledHoles();
+		Hole.initialHoles();
+		player = new Player();
+		extraLife = new ExtraLife();
+	}
+	
+	/**
+	 * @return the sprites
+	 */
+	public static ArrayList<Sprite> getSprites() {
+		return sprites;
 	}
 	
 	/**
@@ -109,11 +131,22 @@ public class World {
 		return player;
 	}
 	
+	public static void setExtraLife(ExtraLife extraLife) {
+		World.extraLife = extraLife;
+	}
+	
 	/**
-	 * @return the sprites
+	 * @return the nextExtraLife
 	 */
-	public static ArrayList<Sprite> getSprites() {
-		return sprites;
+	public static ExtraLife getNextExtraLife() {
+		return nextExtraLife;
+	}
+
+	/**
+	 * @param nextExtraLife the nextExtraLife to set
+	 */
+	public static void setNextExtraLife(ExtraLife nextExtraLife) {
+		World.nextExtraLife = nextExtraLife;
 	}
 	
 	private void readLevelData() {
@@ -166,6 +199,7 @@ public class World {
 			e.printStackTrace();
 		}
 	}
+	
 	private Integer parseDirection(String[] data) {
 		try {
 			return Boolean.parseBoolean(data[INDEX_DIRECTION]) ? 1 : -1;
