@@ -113,7 +113,7 @@ public class World {
 		readLevelData();
 		Hole.resetNumFilledHoles();
 		Hole.initialHoles();
-		player = new Player();
+		player.resetPosition();
 		extraLife = new ExtraLife();
 	}
 	
