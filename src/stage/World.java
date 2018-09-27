@@ -9,6 +9,8 @@ public class World {
 	// sprite width, in pixels
 	public static final int TILE_WIDTH = 48;
 	
+	private static final int NUM_HOLES = 5;	
+	
 	//level data
 	private static final String FIRST_LEVEL_DATA = "assets/levels/0.lvl";
 	private static final String SECOND_LEVEL_DATA = "assets/levels/1.lvl";
@@ -19,18 +21,13 @@ public class World {
 	private static final int INDEX_Y = 2;
 	private static final int INDEX_DIRECTION = 3;
 	
-	private static final int NUM_HOLES = 5;
-	
-	private static final int ROUND_ERROR = 5;
-	
 	private int currentLevel;
 	private String currentLevelData;
 	
 	private int numFilledHoles;
 	
 	private static Player player;
-	
-	private ArrayList<Sprite> sprites;	
+	private static ArrayList<Sprite> sprites;	
 	
 	public World() {
 		// Perform initialisation logic
@@ -58,20 +55,16 @@ public class World {
 		
 		// check for hazard and non-hazard collisions
 		for(Sprite sprite : sprites) {
-			if(sprite != player && player.collides(sprite)) {
+			if(sprite != player && sprite.collides(player)) {
 				if(sprite.ifHazard() && player.getRidingVessel() == null) {
 					player.dieOnce();
+					break;
 				}
 				
-				// Only push the player if it is on the right of the bulldozer
-				if(sprite instanceof Bulldozer &&
-					player.getX() - sprite.getX() > TILE_WIDTH - ROUND_ERROR) {
+				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
 					((Vehicle)sprite).setContact(true);
 				}
 				
-				if(sprite instanceof Vessel) {
-					((Vehicle)sprite).setContact(true);
-				}
 			}else if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
 				((Vehicle)sprite).setContact(false);
 			}
@@ -116,6 +109,13 @@ public class World {
 		return player;
 	}
 	
+	/**
+	 * @return the sprites
+	 */
+	public static ArrayList<Sprite> getSprites() {
+		return sprites;
+	}
+	
 	private void readLevelData() {
 		sprites = new ArrayList<>();
 		try (BufferedReader br =
@@ -157,7 +157,7 @@ public class World {
 					case("longLog"):
 						sprites.add(new LongLog(x, y, direction));
 						break;
-					case("turtles"):
+					case("turtle"):
 						sprites.add(new Turtles(x, y, direction));
 						break;
 				}

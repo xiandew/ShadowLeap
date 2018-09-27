@@ -25,6 +25,7 @@ public class Player extends Sprite implements Movable {
 	private Image livesImg;
 	
 	private Sprite ridingVessel;
+	private Player safeGuard;
 	
 	public Player() {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y, HAZARD);
@@ -37,11 +38,15 @@ public class Player extends Sprite implements Movable {
 		this.setRidingVessel(null);
 	}
 	
+	public Player(Player player) {
+		super(PLAYER_SRC, player.getX(), player.getY(), HAZARD);
+	}
+	
 	public void render() {
 		super.render();
 		for(int i=0; i<lives; i++) {
-			livesImg.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i,
-															INITIAL_LIVES_Y);
+			livesImg.drawCentered(
+					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
 	}
 	
@@ -63,23 +68,18 @@ public class Player extends Sprite implements Movable {
 	@Override
 	public void move(Input input, int delta) {
 		// check the state of the player before moving
-		checkState();
+		checkPlayerState();
 		
-		if(input.isKeyPressed(Input.KEY_LEFT)) {
-			setX(validateX(getX() - World.TILE_WIDTH));
+		// prevent the player from crashing into the bulldozer
+		if(!safeMove(input)) {
+			return;
 		}
-		if(input.isKeyPressed(Input.KEY_RIGHT)) {
-			setX(validateX(getX() + World.TILE_WIDTH));
-		}
-		if(input.isKeyPressed(Input.KEY_UP)) {			
-			setY(getY() - World.TILE_WIDTH);
-		}
-		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			setY(getY() + World.TILE_WIDTH);
-		}
+		
+		this.setX(safeGuard.getX());
+		this.setY(safeGuard.getY());
 	}
 	
-	private void checkState() {
+	private void checkPlayerState() {
 		if(this.lives <= 0) {
 			System.exit(0);
 		}
@@ -89,7 +89,32 @@ public class Player extends Sprite implements Movable {
 		}
 	}
 	
-	public void resetPosition() {
+	private boolean safeMove(Input input) {
+		safeGuard = new Player(this);
+		
+		if(input.isKeyPressed(Input.KEY_LEFT)) {
+			safeGuard.setX(validateX(getX() - World.TILE_WIDTH));
+		}
+		if(input.isKeyPressed(Input.KEY_RIGHT)) {
+			safeGuard.setX(validateX(getX() + World.TILE_WIDTH));
+		}
+		if(input.isKeyPressed(Input.KEY_UP)) {			
+			safeGuard.setY(getY() - World.TILE_WIDTH);
+		}
+		if(input.isKeyPressed(Input.KEY_DOWN)) {
+			safeGuard.setY(getY() + World.TILE_WIDTH);
+		}
+		
+		for(Sprite sprite : World.getSprites()) {
+			if(sprite instanceof Bulldozer && sprite.collides(safeGuard)) {
+				return false;
+			}
+		}
+		return true;
+		
+	}
+	
+	private void resetPosition() {
 		this.setX(INITIAL_X);
 		this.setY(INITIAL_Y);
 	}
