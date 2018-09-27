@@ -54,8 +54,8 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	public void render() {
 		if(Math.round((System.nanoTime() - startTime) / TO_SEC) >= waitTime) {
-			super.render();
 			World.setNextExtraLife(new ExtraLife());
+			super.render();
 		}
 		if(Math.round((System.nanoTime() - startTime) / TO_SEC) >=
 														waitTime + LIFETIME) {
