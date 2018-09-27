@@ -13,8 +13,8 @@ public class Player extends Sprite implements Movable {
 	/** starting point of the player */
 	private static final int INITIAL_X = 512;
 	private static final int INITIAL_Y = 720;
-	private static final int INITIAL_LIVES = 3;
 	
+	private static final int INITIAL_LIVES = 3;
 	private static final int INITIAL_LIVES_X = 24;
 	private static final int INITIAL_LIVES_Y = 744;
 	private static final int LIVES_SEPARATION = 32;
@@ -25,7 +25,7 @@ public class Player extends Sprite implements Movable {
 	private Image livesImg;
 	
 	private Sprite ridingVessel = null;
-	private Player safeGuard;
+	private Player guard;
 	
 	public Player() {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y, HAZARD);
@@ -65,20 +65,21 @@ public class Player extends Sprite implements Movable {
 	 */
 	@Override
 	public void move(Input input, int delta) {
-		// check the state of the player before moving
+		
 		checkPlayerState();
 		
-		// prevent the player from crashing into the bulldozer
-		if(!safeMove(input)) {
+		if(!canGuardMove(input)) {
 			return;
 		}
 		
-		this.setX(safeGuard.getX());
-		this.setY(safeGuard.getY());
+		this.setX(guard.getX());
+		this.setY(guard.getY());
 	}
 	
+	
+	/** check the state of the player before moving */
 	private void checkPlayerState() {
-		if(this.lives <= 0) {
+		if(this.lives < 0) {
 			System.exit(0);
 		}
 		if(this.getX() < World.TILE_WIDTH/2 ||
@@ -87,24 +88,26 @@ public class Player extends Sprite implements Movable {
 		}
 	}
 	
-	private boolean safeMove(Input input) {
-		safeGuard = new Player(this);
+	/** prevent the player from crashing into the bulldozer */
+	private boolean canGuardMove(Input input) {
+		guard = new Player(this);
 		
 		if(input.isKeyPressed(Input.KEY_LEFT)) {
-			safeGuard.setX(validateX(getX() - World.TILE_WIDTH));
+			guard.setX(validateX(getX() - World.TILE_WIDTH));
 		}
 		if(input.isKeyPressed(Input.KEY_RIGHT)) {
-			safeGuard.setX(validateX(getX() + World.TILE_WIDTH));
+			guard.setX(validateX(getX() + World.TILE_WIDTH));
 		}
 		if(input.isKeyPressed(Input.KEY_UP)) {			
-			safeGuard.setY(getY() - World.TILE_WIDTH);
+			guard.setY(getY() - World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			safeGuard.setY(getY() + World.TILE_WIDTH);
+			guard.setY(getY() + World.TILE_WIDTH);
 		}
 		
 		for(Sprite sprite : World.getSprites()) {
-			if(sprite instanceof Bulldozer && sprite.collides(safeGuard)) {
+			if((sprite instanceof Bulldozer || sprite instanceof TreeTile) &&
+													sprite.collides(guard)) {
 				return false;
 			}
 		}
@@ -122,7 +125,7 @@ public class Player extends Sprite implements Movable {
 		this.resetPosition();
 	}
 	
-	public void getExtraLife() {
+	public void lifeUp() {
 		this.lives++;
 	}
 	
@@ -139,4 +142,5 @@ public class Player extends Sprite implements Movable {
 	public void setRidingVessel(Sprite ridingVessel) {
 		this.ridingVessel = ridingVessel;
 	}
+	
 }

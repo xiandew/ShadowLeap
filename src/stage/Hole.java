@@ -7,8 +7,6 @@ public class Hole extends Sprite {
 	private static final String FROG_SRC = "assets/frog.png";
 	private static final boolean HAZARD = false;
 	
-	private static final int HOLES_WIDTH = 96;
-	private static final int HOLES_HEIGHT = 48;
 	private static final int HOLES_SEPARATION = 192;
 	private static final int HOLES_Y = 48;
 	private static final int FIRST_HOLE_X = 120;
@@ -42,11 +40,12 @@ public class Hole extends Sprite {
 			World.getSprites().add(
 					new Hole(FIRST_HOLE_X + i * HOLES_SEPARATION, HOLES_Y));
 		}
+		numFilledHoles = 0;
 	}
 	
-	public boolean collides(Player player) {
+	public boolean collides(Sprite player) {
 		bounds = new BoundingBox(
-				this.getX(), this.getY(), HOLES_WIDTH, HOLES_HEIGHT);
+				this.getX(), this.getY(), World.TILE_WIDTH, World.TILE_WIDTH);
 		BoundingBox playerBounds = new BoundingBox(
 				player.getImage(), player.getX(), player.getY());
 		return bounds.intersects(playerBounds);
@@ -57,9 +56,5 @@ public class Hole extends Sprite {
 	 */
 	public static int getNumFilledHoles() {
 		return numFilledHoles;
-	}
-	
-	public static void resetNumFilledHoles() {
-		numFilledHoles = 0;
 	}
 }

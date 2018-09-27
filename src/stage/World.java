@@ -6,7 +6,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class World {
-	/** sprite width, in pixels */
+	/** tile width, in pixels */
 	public static final int TILE_WIDTH = 48;
 	
 	public static final int NUM_HOLES = 5;
@@ -29,6 +29,11 @@ public class World {
 	
 	private static Player player;
 	private static ExtraLife extraLife;
+	
+	/**
+	 * Create the next extra life and set the start time once the current
+	 * extra life shows up
+	 */
 	private static ExtraLife nextExtraLife;
 	
 	public World() {
@@ -56,12 +61,13 @@ public class World {
 		/** check for hazard and non-hazard collisions */
 		for(Sprite sprite : sprites) {
 			if(sprite != player && sprite.collides(player)) {
+				
 				if(sprite.ifHazard() && player.getRidingVessel() == null) {
 					player.dieOnce();
 					break;
 				}
 				
-				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {					
 					((Vehicle)sprite).setContact(true);
 				}
 				
@@ -74,10 +80,11 @@ public class World {
 			}
 		}
 		
-		// check whether hitting the extra life
-		if(player.collides(extraLife) && extraLife != nextExtraLife) {
+		/** check whether hitting the extra life */
+		if(player.collides(extraLife) &&
+				nextExtraLife != null && extraLife != nextExtraLife) {
 			extraLife = nextExtraLife;
-			player.getExtraLife();
+			player.lifeUp();
 		}
 		
 		/** Update the movements of sprites except the player and extra life */
@@ -111,9 +118,8 @@ public class World {
 		currentLevelData = SECOND_LEVEL_DATA;
 		
 		readLevelData();
-		Hole.resetNumFilledHoles();
 		Hole.initialHoles();
-		player = new Player();
+		player.resetPosition();
 		extraLife = new ExtraLife();
 	}
 	
@@ -129,6 +135,10 @@ public class World {
 	 */
 	public static Player getPlayer() {
 		return player;
+	}
+	
+	public static ExtraLife getExtraLife() {
+		return extraLife;
 	}
 	
 	public static void setExtraLife(ExtraLife extraLife) {

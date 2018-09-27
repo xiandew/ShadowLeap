@@ -12,19 +12,23 @@ public class ExtraLife extends Sprite implements Movable{
 	private static final String EXTRALIFE_SRC = "assets/extralife.png";
 	private static final boolean HAZARD = false;
 	
+	/** Number to divide when converting Nanosecond to second */
 	private static final double TO_SEC = 1E9;
+	
 	private static final int MIN_WAIT_TIME = 25;
 	private static final int MAX_WAIT_TIME = 35;
 	private static final int LIFETIME = 14;
 	private static final int PAUSE = 2;
-	
-	private long sinceAppear = 0;
-	private float relativeX = 0;
 		
 	private static Random random = new Random();
+	
+	/** the random chosen log to ride */
 	private Vehicle ridingLog;
+	private float relativeX = 0;
+	
 	private int waitTime;
 	private long startTime;
+	private long timeSinceAppear = 0;
 	
 	/** 1 for right, -1 for left */
 	private int direction = 1;
@@ -41,7 +45,7 @@ public class ExtraLife extends Sprite implements Movable{
 							random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
 	}
 	
-	// random log
+	/** choose the random log */
 	public static Vehicle randomLog() {
 		ArrayList<Sprite> logs = new ArrayList<>();
 		for(Sprite sprite : World.getSprites()) {
@@ -49,16 +53,25 @@ public class ExtraLife extends Sprite implements Movable{
 				logs.add(sprite);
 			}
 		}
+		
 		return (Vehicle) logs.get(random.nextInt(logs.size()));
 	}
 	
 	public void render() {
-		if(Math.round((System.nanoTime() - startTime) / TO_SEC) >= waitTime) {
+		int timeSinceStart = (int) ((System.nanoTime() - startTime) / TO_SEC);
+		
+		/** show up and create next extra life when the wait time passed. */
+		if(timeSinceStart >= waitTime) {
+			if(World.getNextExtraLife() == null ||
+					World.getExtraLife() == World.getNextExtraLife()) {
+				World.setNextExtraLife(new ExtraLife());
+			}
 			super.render();
-			World.setNextExtraLife(new ExtraLife());
 		}
-		if(Math.round((System.nanoTime() - startTime) / TO_SEC) >=
-														waitTime + LIFETIME) {
+		
+		/** destroy the current extra life when the lifetime passed */
+		if(timeSinceStart >= waitTime + LIFETIME &&
+				World.getExtraLife() != World.getNextExtraLife()) {
 			World.setExtraLife(World.getNextExtraLife());
 		}
 	}
@@ -66,24 +79,27 @@ public class ExtraLife extends Sprite implements Movable{
 	@Override
 	public float validateX(float x) {
 		int halfLogWidth = ridingLog.getImage().getWidth() / 2;
-		if(x <= -halfLogWidth || x >= halfLogWidth) {
+		
+		if(x <= -halfLogWidth && direction == -1 ||
+				x >= halfLogWidth && direction == 1) {
 			direction *= (-1);
 			return x + 2 * direction * World.TILE_WIDTH;
 		}
 		return x;
 	}
 
+	/** move along the log */
 	@Override
 	public void move(Input input, int delta) {
-		long appearTime =
-				Math.round((System.nanoTime() - startTime) / TO_SEC) - waitTime;
+		int appearTime =
+				(int) ((System.nanoTime() - startTime) / TO_SEC - waitTime);
 		if(appearTime < 0) {
 			return;
 		}
 		
-		if(appearTime % PAUSE == 0 && appearTime != sinceAppear){
+		if(appearTime % PAUSE == 0 && appearTime != timeSinceAppear){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
-			sinceAppear = appearTime;
+			timeSinceAppear = appearTime;
 		}
 		
 		setX(ridingLog.getX() + relativeX);
