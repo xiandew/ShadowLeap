@@ -12,7 +12,7 @@ public class World {
 	public static final int NUM_HOLES = 5;
 	
 	/** level data */
-	private static final String FIRST_LEVEL_DATA = "assets/levels/1.lvl";
+	private static final String FIRST_LEVEL_DATA = "assets/levels/0.lvl";
 	private static final String SECOND_LEVEL_DATA = "assets/levels/1.lvl";
 	
 	/**level data indexes*/
