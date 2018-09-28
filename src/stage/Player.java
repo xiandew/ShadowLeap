@@ -25,7 +25,7 @@ public class Player extends Sprite implements Movable {
 	private Image livesImg;
 	
 	private Sprite ridingVessel = null;
-	private Player safeGuard;
+	private Player guard;
 	
 	public Player() {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y, HAZARD);
@@ -68,12 +68,12 @@ public class Player extends Sprite implements Movable {
 		
 		checkPlayerState();
 		
-		if(!safeMove(input)) {
+		if(!canGuardMove(input)) {
 			return;
 		}
 		
-		this.setX(safeGuard.getX());
-		this.setY(safeGuard.getY());
+		this.setX(guard.getX());
+		this.setY(guard.getY());
 	}
 	
 	
@@ -89,24 +89,25 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/** prevent the player from crashing into the bulldozer */
-	private boolean safeMove(Input input) {
-		safeGuard = new Player(this);
+	private boolean canGuardMove(Input input) {
+		guard = new Player(this);
 		
 		if(input.isKeyPressed(Input.KEY_LEFT)) {
-			safeGuard.setX(validateX(getX() - World.TILE_WIDTH));
+			guard.setX(validateX(getX() - World.TILE_WIDTH));
 		}
 		if(input.isKeyPressed(Input.KEY_RIGHT)) {
-			safeGuard.setX(validateX(getX() + World.TILE_WIDTH));
+			guard.setX(validateX(getX() + World.TILE_WIDTH));
 		}
 		if(input.isKeyPressed(Input.KEY_UP)) {			
-			safeGuard.setY(getY() - World.TILE_WIDTH);
+			guard.setY(getY() - World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			safeGuard.setY(getY() + World.TILE_WIDTH);
+			guard.setY(getY() + World.TILE_WIDTH);
 		}
 		
 		for(Sprite sprite : World.getSprites()) {
-			if(sprite instanceof Bulldozer && sprite.collides(safeGuard)) {
+			if((sprite instanceof Bulldozer || sprite instanceof TreeTile) &&
+													sprite.collides(guard)) {
 				return false;
 			}
 		}
