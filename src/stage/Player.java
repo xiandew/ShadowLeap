@@ -79,7 +79,7 @@ public class Player extends Sprite implements Movable {
 	
 	/** check the state of the player before moving */
 	private void checkPlayerState() {
-		if(this.lives <= 0) {
+		if(this.lives < 0) {
 			System.exit(0);
 		}
 		if(this.getX() < World.TILE_WIDTH/2 ||
