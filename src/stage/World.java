@@ -29,6 +29,11 @@ public class World {
 	
 	private static Player player;
 	private static ExtraLife extraLife;
+	
+	/**
+	 * Create the next extra life and set the start time once the current
+	 * extra life shows up
+	 */
 	private static ExtraLife nextExtraLife;
 	
 	public World() {
@@ -74,11 +79,11 @@ public class World {
 			}
 		}
 		
-		// check whether hitting the extra life
+		/** check whether hitting the extra life */
 		if(player.collides(extraLife) &&
 				nextExtraLife != null && extraLife != nextExtraLife) {
 			extraLife = nextExtraLife;
-			player.getExtraLife();
+			player.lifeUp();
 		}
 		
 		/** Update the movements of sprites except the player and extra life */

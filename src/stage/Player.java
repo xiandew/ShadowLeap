@@ -122,7 +122,7 @@ public class Player extends Sprite implements Movable {
 		this.resetPosition();
 	}
 	
-	public void getExtraLife() {
+	public void lifeUp() {
 		this.lives++;
 	}
 	
