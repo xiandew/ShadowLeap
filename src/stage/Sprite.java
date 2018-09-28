@@ -79,7 +79,8 @@ public abstract class Sprite {
 	 * @param other The other sprite
 	 */
 	public boolean collides(Sprite other) {
-		bounds = new BoundingBox(this.image, this.x, this.y);
+		bounds =
+				new BoundingBox(this.image, this.x, this.y);
 		BoundingBox otherBounds =
 				new BoundingBox(other.getImage(), other.getX(), other.getY());
 		return bounds.intersects(otherBounds);

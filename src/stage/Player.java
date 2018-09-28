@@ -13,8 +13,8 @@ public class Player extends Sprite implements Movable {
 	/** starting point of the player */
 	private static final int INITIAL_X = 512;
 	private static final int INITIAL_Y = 720;
-	private static final int INITIAL_LIVES = 3;
 	
+	private static final int INITIAL_LIVES = 3;
 	private static final int INITIAL_LIVES_X = 24;
 	private static final int INITIAL_LIVES_Y = 744;
 	private static final int LIVES_SEPARATION = 32;
@@ -65,10 +65,9 @@ public class Player extends Sprite implements Movable {
 	 */
 	@Override
 	public void move(Input input, int delta) {
-		// check the state of the player before moving
+		
 		checkPlayerState();
 		
-		// prevent the player from crashing into the bulldozer
 		if(!safeMove(input)) {
 			return;
 		}
@@ -77,6 +76,8 @@ public class Player extends Sprite implements Movable {
 		this.setY(safeGuard.getY());
 	}
 	
+	
+	/** check the state of the player before moving */
 	private void checkPlayerState() {
 		if(this.lives <= 0) {
 			System.exit(0);
@@ -87,6 +88,7 @@ public class Player extends Sprite implements Movable {
 		}
 	}
 	
+	/** prevent the player from crashing into the bulldozer */
 	private boolean safeMove(Input input) {
 		safeGuard = new Player(this);
 		

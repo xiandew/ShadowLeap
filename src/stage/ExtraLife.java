@@ -12,13 +12,17 @@ public class ExtraLife extends Sprite implements Movable{
 	private static final String EXTRALIFE_SRC = "assets/extralife.png";
 	private static final boolean HAZARD = false;
 	
+	/** Number to divide when converting Nanosecond to second */
 	private static final double TO_SEC = 1E9;
+	
 	private static final int MIN_WAIT_TIME = 25;
 	private static final int MAX_WAIT_TIME = 35;
 	private static final int LIFETIME = 14;
 	private static final int PAUSE = 2;
 		
 	private static Random random = new Random();
+	
+	/** the random chosen log to ride */
 	private Vehicle ridingLog;
 	private float relativeX = 0;
 	
@@ -41,7 +45,7 @@ public class ExtraLife extends Sprite implements Movable{
 							random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
 	}
 	
-	// random log
+	/** choose the random log */
 	public static Vehicle randomLog() {
 		ArrayList<Sprite> logs = new ArrayList<>();
 		for(Sprite sprite : World.getSprites()) {
@@ -55,6 +59,8 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	public void render() {
 		int timeSinceStart = (int) ((System.nanoTime() - startTime) / TO_SEC);
+		
+		/** show up and create next extra life when the wait time passed. */
 		if(timeSinceStart >= waitTime) {
 			if(World.getNextExtraLife() == null ||
 					World.getExtraLife() == World.getNextExtraLife()) {
@@ -62,6 +68,8 @@ public class ExtraLife extends Sprite implements Movable{
 			}
 			super.render();
 		}
+		
+		/** destroy the current extra life when the lifetime passed */
 		if(timeSinceStart >= waitTime + LIFETIME &&
 				World.getExtraLife() != World.getNextExtraLife()) {
 			World.setExtraLife(World.getNextExtraLife());
@@ -71,6 +79,7 @@ public class ExtraLife extends Sprite implements Movable{
 	@Override
 	public float validateX(float x) {
 		int halfLogWidth = ridingLog.getImage().getWidth() / 2;
+		
 		if(x <= -halfLogWidth && direction == -1 ||
 				x >= halfLogWidth && direction == 1) {
 			direction *= (-1);
@@ -79,6 +88,7 @@ public class ExtraLife extends Sprite implements Movable{
 		return x;
 	}
 
+	/** move along the log */
 	@Override
 	public void move(Input input, int delta) {
 		int appearTime =

@@ -12,6 +12,7 @@ public abstract class Vessel extends Vehicle implements Rideable {
 		super(vehicleSrc, x, y, speed, direction, HAZARD);
 	}
 	
+	/** carry the player if the player is above of the vessel */
 	public void move(Input input, int delta) {
 		super.move(input, delta);
 		if(super.ifContact()) {

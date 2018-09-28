@@ -12,7 +12,7 @@ public class Bulldozer extends Vehicle {
 		super(BULLDOZER_SRC, x, y, SPEED, direction, HAZARD);
 	}
 	
-	// 
+	/** Push the player if making contact with it */
 	public void move(Input input, int delta) {
 		super.move(input, delta);
 		if(super.ifContact()) {

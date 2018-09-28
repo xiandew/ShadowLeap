@@ -45,7 +45,7 @@ public class Hole extends Sprite {
 		numFilledHoles = 0;
 	}
 	
-	public boolean collides(Player player) {
+	public boolean collides(Sprite player) {
 		bounds = new BoundingBox(
 				this.getX(), this.getY(), HOLES_WIDTH, HOLES_HEIGHT);
 		BoundingBox playerBounds = new BoundingBox(

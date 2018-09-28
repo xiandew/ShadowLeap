@@ -18,11 +18,17 @@ public class Turtles extends Vessel {
 	
 	public void render() {
 		int timeSinceAppear = (int) ((System.nanoTime() - timeAppear) / TO_SEC);
+		
+		/** show up until the the breath time is up */
 		if(timeSinceAppear < BREATH_TIME) {
 			super.render();
 			return;
+		
+		/** when the turtle is to resurface */
 		}else if(timeSinceAppear >= BREATH_TIME + DIVE_TIME) {
 			timeAppear = System.nanoTime();
+		
+		/** when diving and the player is above of it */
 		}else if(World.getPlayer().getRidingVessel() == this){
 			World.getPlayer().dieOnce();
 		}

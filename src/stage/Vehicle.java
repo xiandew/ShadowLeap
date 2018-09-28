@@ -6,15 +6,14 @@ import org.newdawn.slick.Input;
 public abstract class Vehicle extends Sprite implements Movable {
 	
 	private float speed;
-	// -1 for left, 1 for right
+	/** -1 for left, 1 for right */
 	private int direction;
 	
-	// whether contact with the player
+	/** whether contact with the player*/
 	private boolean isContact = false;
 	
 	/**
 	 * Initialise a vehicle with moving direction at (x, y).
-	 * @throws SlickException 
 	 */
 	public Vehicle(String vehicleSrc, float x, float y,
 							float speed, int direction, boolean isHazard) {
