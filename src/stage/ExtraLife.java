@@ -17,14 +17,14 @@ public class ExtraLife extends Sprite implements Movable{
 	private static final int MAX_WAIT_TIME = 35;
 	private static final int LIFETIME = 14;
 	private static final int PAUSE = 2;
-	
-	private long timeSinceAppear = 0;
-	private float relativeX = 0;
 		
 	private static Random random = new Random();
 	private Vehicle ridingLog;
+	private float relativeX = 0;
+	
 	private int waitTime;
 	private long startTime;
+	private long timeSinceAppear = 0;
 	
 	/** 1 for right, -1 for left */
 	private int direction = 1;
@@ -49,13 +49,11 @@ public class ExtraLife extends Sprite implements Movable{
 				logs.add(sprite);
 			}
 		}
-		System.out.println(logs.size());
 		return (Vehicle) logs.get(random.nextInt(logs.size()));
 	}
 	
 	public void render() {
-		long timeSinceStart =
-				Math.round((System.nanoTime() - startTime) / TO_SEC);
+		int timeSinceStart = (int) ((System.nanoTime() - startTime) / TO_SEC);
 		if(timeSinceStart >= waitTime) {
 			if(World.getNextExtraLife() == null ||
 					World.getExtraLife() == World.getNextExtraLife()) {
@@ -72,7 +70,8 @@ public class ExtraLife extends Sprite implements Movable{
 	@Override
 	public float validateX(float x) {
 		int halfLogWidth = ridingLog.getImage().getWidth() / 2;
-		if(x <= -halfLogWidth || x >= halfLogWidth) {
+		if(x <= -halfLogWidth && direction == -1 ||
+				x >= halfLogWidth && direction == 1) {
 			direction *= (-1);
 			return x + 2 * direction * World.TILE_WIDTH;
 		}
@@ -81,8 +80,8 @@ public class ExtraLife extends Sprite implements Movable{
 
 	@Override
 	public void move(Input input, int delta) {
-		long appearTime =
-				Math.round((System.nanoTime() - startTime) / TO_SEC) - waitTime;
+		int appearTime =
+				(int) ((System.nanoTime() - startTime) / TO_SEC - waitTime);
 		if(appearTime < 0) {
 			return;
 		}
