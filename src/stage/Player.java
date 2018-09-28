@@ -139,4 +139,5 @@ public class Player extends Sprite implements Movable {
 	public void setRidingVessel(Sprite ridingVessel) {
 		this.ridingVessel = ridingVessel;
 	}
+	
 }

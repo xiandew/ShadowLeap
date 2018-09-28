@@ -42,6 +42,7 @@ public class Hole extends Sprite {
 			World.getSprites().add(
 					new Hole(FIRST_HOLE_X + i * HOLES_SEPARATION, HOLES_Y));
 		}
+		numFilledHoles = 0;
 	}
 	
 	public boolean collides(Player player) {
@@ -57,9 +58,5 @@ public class Hole extends Sprite {
 	 */
 	public static int getNumFilledHoles() {
 		return numFilledHoles;
-	}
-	
-	public static void resetNumFilledHoles() {
-		numFilledHoles = 0;
 	}
 }

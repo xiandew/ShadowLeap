@@ -61,7 +61,7 @@ public class World {
 					break;
 				}
 				
-				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {					
 					((Vehicle)sprite).setContact(true);
 				}
 				
@@ -75,7 +75,8 @@ public class World {
 		}
 		
 		// check whether hitting the extra life
-		if(player.collides(extraLife) && extraLife != nextExtraLife) {
+		if(player.collides(extraLife) &&
+				nextExtraLife != null && extraLife != nextExtraLife) {
 			extraLife = nextExtraLife;
 			player.getExtraLife();
 		}
@@ -111,7 +112,6 @@ public class World {
 		currentLevelData = SECOND_LEVEL_DATA;
 		
 		readLevelData();
-		Hole.resetNumFilledHoles();
 		Hole.initialHoles();
 		player.resetPosition();
 		extraLife = new ExtraLife();

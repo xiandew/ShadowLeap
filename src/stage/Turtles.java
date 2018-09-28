@@ -21,8 +21,10 @@ public class Turtles extends Vessel {
 		if(timeSinceAppear < BREATH_TIME) {
 			super.render();
 			return;
-		}else if(timeSinceAppear >= BREATH_TIME + DIVE_TIME){
+		}else if(timeSinceAppear >= BREATH_TIME + DIVE_TIME) {
 			timeAppear = System.nanoTime();
+		}else if(World.getPlayer().getRidingVessel() == this){
+			World.getPlayer().dieOnce();
 		}
 		
 	}
