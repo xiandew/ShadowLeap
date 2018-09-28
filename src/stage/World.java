@@ -6,7 +6,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class World {
-	/** sprite width, in pixels */
+	/** tile width, in pixels */
 	public static final int TILE_WIDTH = 48;
 	
 	public static final int NUM_HOLES = 5;
@@ -61,6 +61,7 @@ public class World {
 		/** check for hazard and non-hazard collisions */
 		for(Sprite sprite : sprites) {
 			if(sprite != player && sprite.collides(player)) {
+				
 				if(sprite.ifHazard() && player.getRidingVessel() == null) {
 					player.dieOnce();
 					break;
