@@ -31,9 +31,17 @@ public class World {
 	private static ExtraLife extraLife;
 	
 	public World() {
+		initialiseWorld();
+	}
+	
+	public void initialiseWorld() {
+		
 		readLevelData();
+		
 		Hole.initialHoles();
+		
 		player = new Player();
+		
 		extraLife = new ExtraLife();
 	}
 	
@@ -111,11 +119,7 @@ public class World {
 			System.exit(0);
 		}
 		currentLevelData = SECOND_LEVEL_DATA;
-		
-		readLevelData();
-		Hole.initialHoles();
-		player.resetPosition();
-		extraLife = new ExtraLife();
+		initialiseWorld();
 	}
 	
 	/**

@@ -21,9 +21,12 @@ public class Player extends Sprite implements Movable {
 	
 	private static final boolean HAZARD = false;
 	
-	private int lives = INITIAL_LIVES;
+	/** Keep the lives in the next Stage */
+	private static int lives = INITIAL_LIVES;
+	
 	private Image livesImg;
 	
+	/** the vessel that the player is riding */
 	private Sprite ridingVessel = null;
 	
 	/** Prevent the player from solid tiles i.e. the bulldozers and the trees*/
@@ -71,7 +74,7 @@ public class Player extends Sprite implements Movable {
 	
 	/** check the state of the player before moving */
 	private void checkPlayerState() {
-		if(this.lives < 0) {
+		if(Player.lives < 0) {
 			System.exit(0);
 		}
 		if(this.getX() < World.TILE_WIDTH/2 ||
@@ -124,12 +127,12 @@ public class Player extends Sprite implements Movable {
 	}
 
 	public void dieOnce() {
-		this.lives--;
+		Player.lives--;
 		this.resetPosition();
 	}
 	
 	public void lifeUp() {
-		this.lives++;
+		Player.lives++;
 	}
 	
 	/**
