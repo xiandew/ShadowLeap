@@ -4,8 +4,9 @@ import utilities.Movable;
 import org.newdawn.slick.Input;
 
 public abstract class Vehicle extends Sprite implements Movable {
-	
+	/** The speed of vehicles, in pixels per millisecond */
 	private float speed;
+	
 	/** -1 for left, 1 for right */
 	private int direction;
 	

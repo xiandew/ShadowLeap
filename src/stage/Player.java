@@ -21,10 +21,15 @@ public class Player extends Sprite implements Movable {
 	
 	private static final boolean HAZARD = false;
 	
-	private int lives = INITIAL_LIVES;
+	/** Keep the lives in the next Stage */
+	private static int lives = INITIAL_LIVES;
+	
 	private Image livesImg;
 	
+	/** the vessel that the player is riding */
 	private Sprite ridingVessel = null;
+	
+	/** Prevent the player from solid tiles i.e. the bulldozers and the trees*/
 	private Player guard;
 	
 	public Player() {
@@ -49,16 +54,6 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * Validate the x before update.
-	 */
-	public float validateX(float x) {
-		if(x <= 0 || x >= App.SCREEN_WIDTH) {
-			return getX();
-		}
-		return x;
-	}
-	
-	/**
 	 * Control the movement of the player
 	 * @param input Left, Right, Up, Down
 	 * @param delta
@@ -79,13 +74,24 @@ public class Player extends Sprite implements Movable {
 	
 	/** check the state of the player before moving */
 	private void checkPlayerState() {
-		if(this.lives < 0) {
+		if(Player.lives < 0) {
 			System.exit(0);
 		}
 		if(this.getX() < World.TILE_WIDTH/2 ||
 				this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			dieOnce();
 		}
+	}
+	
+	/**
+	 * Validate the x before update.
+	 */
+	public float validateX(float x) {
+		if(x < World.TILE_WIDTH/2 ||
+				x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+			return getX();
+		}
+		return x;
 	}
 	
 	/** prevent the player from crashing into the bulldozer */
@@ -121,12 +127,12 @@ public class Player extends Sprite implements Movable {
 	}
 
 	public void dieOnce() {
-		this.lives--;
+		Player.lives--;
 		this.resetPosition();
 	}
 	
 	public void lifeUp() {
-		this.lives++;
+		Player.lives++;
 	}
 	
 	/**
