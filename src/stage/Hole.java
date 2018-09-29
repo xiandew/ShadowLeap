@@ -1,7 +1,5 @@
 package stage;
 
-import utilities.BoundingBox;
-
 public class Hole extends Sprite {
 	
 	private static final String FROG_SRC = "assets/frog.png";
@@ -13,7 +11,6 @@ public class Hole extends Sprite {
 	
 	private static int numFilledHoles = 0;
 	private boolean isfilled = false;
-	private BoundingBox bounds;
 	
 	public Hole(float x, float y) {
 		super(FROG_SRC, x, y, HAZARD);
@@ -43,14 +40,6 @@ public class Hole extends Sprite {
 		numFilledHoles = 0;
 	}
 	
-	public boolean collides(Sprite player) {
-		bounds = new BoundingBox(
-				this.getX(), this.getY(), World.TILE_WIDTH, World.TILE_WIDTH);
-		BoundingBox playerBounds = new BoundingBox(
-				player.getImage(), player.getX(), player.getY());
-		return bounds.intersects(playerBounds);
-	}
-
 	/**
 	 * @return the numFilledHoles
 	 */
