@@ -49,16 +49,6 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * Validate the x before update.
-	 */
-	public float validateX(float x) {
-		if(x <= 0 || x >= App.SCREEN_WIDTH) {
-			return getX();
-		}
-		return x;
-	}
-	
-	/**
 	 * Control the movement of the player
 	 * @param input Left, Right, Up, Down
 	 * @param delta
@@ -86,6 +76,17 @@ public class Player extends Sprite implements Movable {
 				this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			dieOnce();
 		}
+	}
+	
+	/**
+	 * Validate the x before update.
+	 */
+	public float validateX(float x) {
+		if(x < World.TILE_WIDTH/2 ||
+				x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+			return getX();
+		}
+		return x;
 	}
 	
 	/** prevent the player from crashing into the bulldozer */
