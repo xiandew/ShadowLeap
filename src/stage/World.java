@@ -30,12 +30,6 @@ public class World {
 	private static Player player;
 	private static ExtraLife extraLife;
 	
-	/**
-	 * Create the next extra life and set the start time once the current
-	 * extra life shows up
-	 */
-	private static ExtraLife nextExtraLife;
-	
 	public World() {
 		readLevelData();
 		Hole.initialHoles();
@@ -82,8 +76,9 @@ public class World {
 		
 		/** check whether hitting the extra life */
 		if(player.collides(extraLife) &&
-				nextExtraLife != null && extraLife != nextExtraLife) {
-			extraLife = nextExtraLife;
+				extraLife.getNextExtraLife() != null &&
+				extraLife.getNextExtraLife() != extraLife) {
+			extraLife = extraLife.getNextExtraLife();
 			player.lifeUp();
 		}
 		
@@ -143,20 +138,6 @@ public class World {
 	
 	public static void setExtraLife(ExtraLife extraLife) {
 		World.extraLife = extraLife;
-	}
-	
-	/**
-	 * @return the nextExtraLife
-	 */
-	public static ExtraLife getNextExtraLife() {
-		return nextExtraLife;
-	}
-
-	/**
-	 * @param nextExtraLife the nextExtraLife to set
-	 */
-	public static void setNextExtraLife(ExtraLife nextExtraLife) {
-		World.nextExtraLife = nextExtraLife;
 	}
 	
 	private void readLevelData() {

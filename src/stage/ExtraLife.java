@@ -15,6 +15,7 @@ public class ExtraLife extends Sprite implements Movable{
 	/** Number to divide when converting Nanosecond to second */
 	private static final double TO_SEC = 1E9;
 	
+	/** time in seconds*/
 	private static final int MIN_WAIT_TIME = 25;
 	private static final int MAX_WAIT_TIME = 35;
 	private static final int LIFETIME = 14;
@@ -32,6 +33,12 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	/** 1 for right, -1 for left */
 	private int direction = 1;
+	
+	/**
+	 * Create the next extra life and set the start time once the current
+	 * extra life shows up
+	 */
+	private ExtraLife nextExtraLife;
 	
 	public ExtraLife() {
 		this(randomLog());
@@ -62,17 +69,16 @@ public class ExtraLife extends Sprite implements Movable{
 		
 		/** show up and create next extra life when the wait time passed. */
 		if(timeSinceStart >= waitTime) {
-			if(World.getNextExtraLife() == null ||
-					World.getExtraLife() == World.getNextExtraLife()) {
-				World.setNextExtraLife(new ExtraLife());
+			if(nextExtraLife == null || nextExtraLife == World.getExtraLife()) {
+				nextExtraLife = new ExtraLife();
 			}
 			super.render();
 		}
 		
 		/** destroy the current extra life when the lifetime passed */
 		if(timeSinceStart >= waitTime + LIFETIME &&
-				World.getExtraLife() != World.getNextExtraLife()) {
-			World.setExtraLife(World.getNextExtraLife());
+				nextExtraLife != World.getExtraLife()) {
+			World.setExtraLife(nextExtraLife);
 		}
 	}
 	
@@ -103,6 +109,10 @@ public class ExtraLife extends Sprite implements Movable{
 		}
 		
 		setX(ridingLog.getX() + relativeX);
+	}
+
+	public ExtraLife getNextExtraLife() {
+		return nextExtraLife;
 	}
 
 }
