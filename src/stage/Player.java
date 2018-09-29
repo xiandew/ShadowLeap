@@ -25,6 +25,8 @@ public class Player extends Sprite implements Movable {
 	private Image livesImg;
 	
 	private Sprite ridingVessel = null;
+	
+	/** Prevent the player from solid tiles i.e. the bulldozers and the trees*/
 	private Player guard;
 	
 	public Player() {
