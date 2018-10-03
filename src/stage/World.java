@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
+import utilities.Movable;
+
 public class World {
 	/** tile width, in pixels */
 	public static final int TILE_WIDTH = 48;
@@ -28,7 +30,6 @@ public class World {
 	private static ArrayList<Sprite> sprites;
 	
 	private static Player player;
-	private static ExtraLife extraLife;
 	
 	public World() {
 		initialiseWorld();
@@ -42,16 +43,18 @@ public class World {
 		
 		player = new Player();
 		
-		extraLife = new ExtraLife();
+		sprites.add(player);
+		sprites.add(new ExtraLife());
 	}
 	
 	public void update(Input input, int delta) {
 		
-		/** Update the movement of the player */
-		player.move(input, delta);
-		
-		/** Update the movement of the extra life */
-		extraLife.move(input, delta);
+		/** Update the movements of vehicles */
+		for(Sprite sprite : sprites) {
+			if(sprite instanceof Movable) {
+				((Movable) sprite).move(input, delta);
+			}
+		}
 		
 		/** check whether the player is riding */
 		for(Sprite sprite : sprites) {
@@ -69,7 +72,13 @@ public class World {
 					break;
 				}
 				
-				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {					
+				/** check whether hitting the extra life */
+				if(sprite instanceof ExtraLife) {
+					resetExtraLife();
+					player.lifeUp();
+				}
+				
+				if(sprite instanceof Vehicle) {					
 					((Vehicle)sprite).setContact(true);
 				}
 				
@@ -77,23 +86,8 @@ public class World {
 					((Hole)sprite).setfilled();
 				}
 				
-			}else if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+			}else if(sprite instanceof Vehicle) {
 				((Vehicle)sprite).setContact(false);
-			}
-		}
-		
-		/** check whether hitting the extra life */
-		if(player.collides(extraLife) &&
-				extraLife.getNextExtraLife() != null &&
-				extraLife.getNextExtraLife() != extraLife) {
-			extraLife = extraLife.getNextExtraLife();
-			player.lifeUp();
-		}
-		
-		/** Update the movements of sprites except the player and extra life */
-		for(Sprite sprite : sprites) {
-			if(sprite instanceof Vehicle) {
-				((Vehicle)sprite).move(input, delta);
 			}
 		}
 		
@@ -108,8 +102,6 @@ public class World {
 		for(Sprite sprite: sprites) {
 			sprite.render();
 		}
-		player.render();
-		extraLife.render();
 	}
 	
 	/** change the level data. Exit if the second level completed */
@@ -136,12 +128,13 @@ public class World {
 		return player;
 	}
 	
-	public static ExtraLife getExtraLife() {
-		return extraLife;
-	}
-	
-	public static void setExtraLife(ExtraLife extraLife) {
-		World.extraLife = extraLife;
+	public static void resetExtraLife() {
+		
+		for(Sprite sprite: sprites) {
+			if(sprite instanceof ExtraLife) {
+				sprites.set(sprites.indexOf(sprite), new ExtraLife());
+			}
+		}
 	}
 	
 	private void readLevelData() {

@@ -28,17 +28,11 @@ public class ExtraLife extends Sprite implements Movable{
 	private float relativeX = 0;
 	
 	private int waitTime;
-	private long startTime;
+	private long createTime;
 	private long timeSinceAppear = 0;
 	
 	/** 1 for right, -1 for left */
 	private int direction = 1;
-	
-	/**
-	 * Create the next extra life and set the start time once the current
-	 * extra life shows up
-	 */
-	private ExtraLife nextExtraLife;
 	
 	public ExtraLife() {
 		this(randomLog());
@@ -47,7 +41,7 @@ public class ExtraLife extends Sprite implements Movable{
 	public ExtraLife(Vehicle ridingLog) {
 		super(EXTRALIFE_SRC, ridingLog.getX(), ridingLog.getY(), HAZARD);
 		this.ridingLog = ridingLog;
-		this.startTime = System.nanoTime();
+		this.createTime = System.nanoTime();
 		this.waitTime = MIN_WAIT_TIME +
 							random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
 	}
@@ -65,20 +59,16 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 	
 	public void render() {
-		int timeSinceStart = (int) ((System.nanoTime() - startTime) / TO_SEC);
+		int timeSinceCreate = (int) ((System.nanoTime() - createTime) / TO_SEC);
 		
 		/** show up and create next extra life when the wait time passed. */
-		if(timeSinceStart >= waitTime) {
-			if(nextExtraLife == null || nextExtraLife == World.getExtraLife()) {
-				nextExtraLife = new ExtraLife();
-			}
+		if(timeSinceCreate >= waitTime) {
 			super.render();
 		}
 		
-		/** destroy the current extra life when the lifetime passed */
-		if(timeSinceStart >= waitTime + LIFETIME &&
-				nextExtraLife != World.getExtraLife()) {
-			World.setExtraLife(nextExtraLife);
+		/** update the extra life when its lifetime passed */
+		if(timeSinceCreate >= waitTime + LIFETIME) {
+			World.resetExtraLife();
 		}
 	}
 	
@@ -97,12 +87,12 @@ public class ExtraLife extends Sprite implements Movable{
 	/** move along the log */
 	@Override
 	public void move(Input input, int delta) {
-		int appearTime =
-				(int) ((System.nanoTime() - startTime) / TO_SEC - waitTime);
-		if(appearTime < 0) {
+		int timeSinceCreate = (int) ((System.nanoTime() - createTime) / TO_SEC);
+		if(timeSinceCreate < waitTime) {
 			return;
 		}
 		
+		int appearTime = timeSinceCreate - waitTime;
 		if(appearTime % PAUSE == 0 && appearTime != timeSinceAppear){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
 			timeSinceAppear = appearTime;
@@ -110,9 +100,13 @@ public class ExtraLife extends Sprite implements Movable{
 		
 		setX(ridingLog.getX() + relativeX);
 	}
-
-	public ExtraLife getNextExtraLife() {
-		return nextExtraLife;
+	
+	public boolean collides(Sprite other) {
+		int timeSinceCreate = (int) ((System.nanoTime() - createTime) / TO_SEC);
+		if(timeSinceCreate >= waitTime) {
+			return super.collides(other);
+		}
+		return false;
 	}
 
 }
