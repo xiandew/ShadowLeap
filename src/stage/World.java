@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
+import utilities.Movable;
+
 public class World {
 	/** tile width, in pixels */
 	public static final int TILE_WIDTH = 48;
@@ -15,7 +17,7 @@ public class World {
 	private static final String FIRST_LEVEL_DATA = "assets/levels/0.lvl";
 	private static final String SECOND_LEVEL_DATA = "assets/levels/1.lvl";
 	
-	/**level data indexes*/
+	/** level data indexes*/
 	private static final int INDEX_OBJECT = 0;
 	private static final int INDEX_X = 1;
 	private static final int INDEX_Y = 2;
@@ -28,7 +30,6 @@ public class World {
 	private static ArrayList<Sprite> sprites;
 	
 	private static Player player;
-	private static ExtraLife extraLife;
 	
 	public World() {
 		initialiseWorld();
@@ -42,16 +43,18 @@ public class World {
 		
 		player = new Player();
 		
-		extraLife = new ExtraLife();
+		sprites.add(player);
+		sprites.add(new ExtraLife());
 	}
 	
 	public void update(Input input, int delta) {
 		
-		/** Update the movement of the player */
-		player.move(input, delta);
-		
-		/** Update the movement of the extra life */
-		extraLife.move(input, delta);
+		/** Update the movements of movable sprites */
+		for(Sprite sprite : sprites) {
+			if(sprite instanceof Movable) {
+				((Movable) sprite).move(input, delta);
+			}
+		}
 		
 		/** check whether the player is riding */
 		for(Sprite sprite : sprites) {
@@ -69,38 +72,32 @@ public class World {
 					break;
 				}
 				
-				if(sprite instanceof Bulldozer || sprite instanceof Vessel) {					
+				/** check whether hitting the extra life */
+				if(sprite instanceof ExtraLife) {
+					resetExtraLife();
+					player.lifeUp();
+				}
+				
+				if(sprite instanceof Vehicle) {					
 					((Vehicle)sprite).setContact(true);
 				}
 				
 				if(sprite instanceof Hole) {
 					((Hole)sprite).setfilled();
+					
+					/** level up when all of the holes are filled */
+					if(Hole.getNumFilledHoles() == NUM_HOLES) {
+						levelUp();
+						break;
+					}
 				}
 				
-			}else if(sprite instanceof Bulldozer || sprite instanceof Vessel) {
+			}else if(sprite instanceof Vehicle) {
 				((Vehicle)sprite).setContact(false);
 			}
-		}
+		}		
 		
-		/** check whether hitting the extra life */
-		if(player.collides(extraLife) &&
-				extraLife.getNextExtraLife() != null &&
-				extraLife.getNextExtraLife() != extraLife) {
-			extraLife = extraLife.getNextExtraLife();
-			player.lifeUp();
-		}
 		
-		/** Update the movements of sprites except the player and extra life */
-		for(Sprite sprite : sprites) {
-			if(sprite instanceof Vehicle) {
-				((Vehicle)sprite).move(input, delta);
-			}
-		}
-		
-		/** level up when all of the holes are filled */
-		if(Hole.getNumFilledHoles() == NUM_HOLES) {
-			levelUp();
-		}
 		
 	}
 	
@@ -108,17 +105,17 @@ public class World {
 		for(Sprite sprite: sprites) {
 			sprite.render();
 		}
-		player.render();
-		extraLife.render();
 	}
 	
 	/** change the level data. Exit if the second level completed */
 	private void levelUp() {
-		currentLevel++;
-		if(currentLevel > 1) {
+		if(currentLevel == 1) {
 			System.exit(0);
 		}
+		
+		currentLevel ++;
 		currentLevelData = SECOND_LEVEL_DATA;
+		
 		initialiseWorld();
 	}
 	
@@ -136,12 +133,14 @@ public class World {
 		return player;
 	}
 	
-	public static ExtraLife getExtraLife() {
-		return extraLife;
-	}
-	
-	public static void setExtraLife(ExtraLife extraLife) {
-		World.extraLife = extraLife;
+	public static void resetExtraLife() {
+		
+		for(Sprite sprite: sprites) {
+			if(sprite instanceof ExtraLife) {
+				sprites.set(sprites.indexOf(sprite), new ExtraLife());
+				break;
+			}
+		}
 	}
 	
 	private void readLevelData() {

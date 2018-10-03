@@ -32,6 +32,7 @@ public class Turtles extends Vessel {
 		
 		/** when diving and the player is above of it */
 		}else if(World.getPlayer().getRidingVessel() == this){
+			World.getPlayer().setRidingVessel(null);
 			World.getPlayer().dieOnce();
 		}
 		
