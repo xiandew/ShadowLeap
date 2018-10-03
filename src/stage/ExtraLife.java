@@ -34,6 +34,8 @@ public class ExtraLife extends Sprite implements Movable{
 	/** 1 for right, -1 for left */
 	private int direction = 1;
 	
+	private boolean isAppear = false;
+	
 	public ExtraLife() {
 		this(randomLog());
 	}
@@ -63,6 +65,7 @@ public class ExtraLife extends Sprite implements Movable{
 		
 		/** show up and create next extra life when the wait time passed. */
 		if(timeSinceCreate >= waitTime) {
+			isAppear = true;
 			super.render();
 		}
 		
@@ -87,12 +90,13 @@ public class ExtraLife extends Sprite implements Movable{
 	/** move along the log */
 	@Override
 	public void move(Input input, int delta) {
-		int timeSinceCreate = (int) ((System.nanoTime() - createTime) / TO_SEC);
-		if(timeSinceCreate < waitTime) {
+		if(!isAppear) {
 			return;
 		}
 		
-		int appearTime = timeSinceCreate - waitTime;
+		int appearTime =
+				(int) ((System.nanoTime() - createTime) / TO_SEC - waitTime);
+		
 		if(appearTime % PAUSE == 0 && appearTime != timeSinceAppear){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
 			timeSinceAppear = appearTime;
@@ -102,8 +106,7 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 	
 	public boolean collides(Sprite other) {
-		int timeSinceCreate = (int) ((System.nanoTime() - createTime) / TO_SEC);
-		if(timeSinceCreate >= waitTime) {
+		if(isAppear) {
 			return super.collides(other);
 		}
 		return false;
