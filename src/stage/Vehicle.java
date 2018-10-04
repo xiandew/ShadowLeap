@@ -33,7 +33,7 @@ public abstract class Vehicle extends Sprite implements Movable {
 	}
 	
 	/**
-	 * Update the movement of a bus.
+	 * Update the movement of a vehicle.
 	 * @param delta Make sure the objects move at the same speed
 	 */
 	public void move(Input input, int delta) {

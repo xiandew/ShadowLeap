@@ -21,7 +21,7 @@ public class Turtles extends Vessel {
 	public void render() {
 		int timeSinceAppear = (int) ((System.nanoTime() - timeAppear) / TO_SEC);
 		
-		/** show up until the the breath time is up */
+		/** shows above the water if the the breath time has not passed */
 		if(timeSinceAppear < BREATH_TIME) {
 			super.render();
 			return;

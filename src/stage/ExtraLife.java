@@ -12,9 +12,6 @@ public class ExtraLife extends Sprite implements Movable{
 	private static final String EXTRALIFE_SRC = "assets/extralife.png";
 	private static final boolean HAZARD = false;
 	
-	/** Number to divide when converting Nanosecond to second */
-	private static final double TO_SEC = 1E9;
-	
 	/** time in seconds*/
 	private static final int MIN_WAIT_TIME = 25;
 	private static final int MAX_WAIT_TIME = 35;
@@ -61,7 +58,8 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 	
 	public void render() {
-		int timeSinceCreate = (int) ((System.nanoTime() - createTime) / TO_SEC);
+		int timeSinceCreate =
+				(int) ((System.nanoTime() - createTime) / World.TO_SEC);
 		
 		/** show up and create next extra life when the wait time passed. */
 		if(timeSinceCreate >= waitTime) {
@@ -95,7 +93,7 @@ public class ExtraLife extends Sprite implements Movable{
 		}
 		
 		int appearTime =
-				(int) ((System.nanoTime() - createTime) / TO_SEC - waitTime);
+			(int) ((System.nanoTime() - createTime) / World.TO_SEC - waitTime);
 		
 		if(appearTime % PAUSE == 0 && appearTime != timeSinceAppear){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
