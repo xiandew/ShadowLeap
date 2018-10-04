@@ -33,7 +33,7 @@ public class BoundingBox {
 		top = bb.top;
 	}
 
-	/*
+	/**
 	 * Sets the x and y position at the centre of the bounding box.
 	 */
 	public void setX(float x) {

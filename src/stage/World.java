@@ -8,6 +8,7 @@ import org.newdawn.slick.Input;
 import utilities.Movable;
 
 public class World {
+	
 	/** tile width, in pixels */
 	public static final int TILE_WIDTH = 48;
 	
@@ -26,9 +27,8 @@ public class World {
 	private int currentLevel = 0;
 	private String currentLevelData = FIRST_LEVEL_DATA;
 	
-	/** containing all except the player and extra life */
+	/** all sprites */
 	private static ArrayList<Sprite> sprites;
-	
 	private static Player player;
 	
 	public World() {
@@ -38,11 +38,9 @@ public class World {
 	public void initialiseWorld() {
 		
 		readLevelData();
-		
 		Hole.initialHoles();
 		
 		player = new Player();
-		
 		sprites.add(player);
 		sprites.add(new ExtraLife());
 	}
@@ -56,48 +54,17 @@ public class World {
 			}
 		}
 		
-		/** check whether the player is riding */
+		/** check for collisions */
 		for(Sprite sprite : sprites) {
-			if(sprite instanceof Vessel && player.collides(sprite)) {
-				player.setRidingVessel(sprite);
+			if(sprite != player && sprite.collides(player)) {
+				player.onCollision(sprite);
 			}
 		}
 		
-		/** check for hazard and non-hazard collisions */
-		for(Sprite sprite : sprites) {
-			if(sprite != player && sprite.collides(player)) {
-				
-				if(sprite.ifHazard() && player.getRidingVessel() == null) {
-					player.dieOnce();
-					break;
-				}
-				
-				/** check whether hitting the extra life */
-				if(sprite instanceof ExtraLife) {
-					resetExtraLife();
-					player.lifeUp();
-				}
-				
-				if(sprite instanceof Vehicle) {					
-					((Vehicle)sprite).setContact(true);
-				}
-				
-				if(sprite instanceof Hole) {
-					((Hole)sprite).setfilled();
-					
-					/** level up when all of the holes are filled */
-					if(Hole.getNumFilledHoles() == NUM_HOLES) {
-						levelUp();
-						break;
-					}
-				}
-				
-			}else if(sprite instanceof Vehicle) {
-				((Vehicle)sprite).setContact(false);
-			}
-		}		
-		
-		
+		/** level up when all of the holes are filled */
+		if(Hole.getNumFilledHoles() == NUM_HOLES) {
+			levelUp();
+		}
 		
 	}
 	
@@ -131,16 +98,6 @@ public class World {
 	 */
 	public static Player getPlayer() {
 		return player;
-	}
-	
-	public static void resetExtraLife() {
-		
-		for(Sprite sprite: sprites) {
-			if(sprite instanceof ExtraLife) {
-				sprites.set(sprites.indexOf(sprite), new ExtraLife());
-				break;
-			}
-		}
 	}
 	
 	private void readLevelData() {

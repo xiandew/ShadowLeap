@@ -19,8 +19,6 @@ public class Player extends Sprite implements Movable {
 	private static final int INITIAL_LIVES_Y = 744;
 	private static final int LIVES_SEPARATION = 32;
 	
-	private static final boolean HAZARD = false;
-	
 	/** Keep the lives in the next Stage */
 	private static int lives = INITIAL_LIVES;
 	
@@ -33,7 +31,7 @@ public class Player extends Sprite implements Movable {
 	private Player guard;
 	
 	public Player() {
-		super(PLAYER_SRC, INITIAL_X, INITIAL_Y, HAZARD);
+		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
 		try {
 			this.livesImg = new Image(LIVES_SRC);
 		} catch (SlickException e) {
@@ -42,26 +40,25 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	public Player(Player player) {
-		super(PLAYER_SRC, player.getX(), player.getY(), HAZARD);
+		super(PLAYER_SRC, player.getX(), player.getY());
 	}
 	
 	public void render() {
 		super.render();
+		
+		/** draw the lives */
 		for(int i=0; i<lives; i++) {
-			livesImg.drawCentered(
-					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
+			livesImg.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
 	}
 	
 	/**
-	 * Control the movement of the player
-	 * @param input Left, Right, Up, Down
-	 * @param delta
+	 * Control the movement of the player.
+	 * @param input Left, Right, Up, Down.
+	 * @param delta Make sure the same rate.
 	 */
 	@Override
 	public void move(Input input, int delta) {
-		
-		checkPlayerState();
 		
 		if(!canGuardMove(input)) {
 			return;
@@ -69,51 +66,72 @@ public class Player extends Sprite implements Movable {
 		
 		this.setX(guard.getX());
 		this.setY(guard.getY());
+		
+		checkPlayerState();
 	}
 	
 	
-	/** check the state of the player before moving */
+	/** check the state of the player */
 	private void checkPlayerState() {
+		
+		/** exit if the player has no lives */
 		if(Player.lives < 0) {
 			System.exit(0);
 		}
-		if(this.getX() < World.TILE_WIDTH/2 ||
-				this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+		
+		/** die once if it is off screen */
+		if( this.getX() < World.TILE_WIDTH/2 ||
+			this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			dieOnce();
+		}
+		
+		/** check whether the player is riding */
+		for(Sprite sprite : World.getSprites()) {
+			if(sprite instanceof Vessel && collides(sprite)) {
+				setRidingVessel(sprite);
+			}
 		}
 	}
 	
 	/**
-	 * Validate the x before update.
+	 * Validate x, y before update.
 	 */
 	public float validateX(float x) {
-		if(x < World.TILE_WIDTH/2 ||
-				x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+		if(x <= World.TILE_WIDTH/2 || x >= App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			return getX();
 		}
 		return x;
+	}
+	public float validateY(float y) {
+		if(y <= 0 || y >= App.SCREEN_HEIGHT) {
+			return getY();
+		}
+		return y;
 	}
 	
 	/** prevent the player from crashing into the bulldozer */
 	private boolean canGuardMove(Input input) {
 		guard = new Player(this);
+		float newX = getX(), newY = getY();
 		
 		if(input.isKeyPressed(Input.KEY_LEFT)) {
-			guard.setX(validateX(getX() - World.TILE_WIDTH));
+			newX = validateX(getX() - World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_RIGHT)) {
-			guard.setX(validateX(getX() + World.TILE_WIDTH));
+			newX = validateX(getX() + World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_UP)) {			
-			guard.setY(getY() - World.TILE_WIDTH);
+			newY = validateY(getY() - World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			guard.setY(getY() + World.TILE_WIDTH);
+			newY = validateY(getY() + World.TILE_WIDTH);
 		}
 		
+		guard.setX(newX);
+		guard.setY(newY);
+		
 		for(Sprite sprite : World.getSprites()) {
-			if((sprite instanceof Bulldozer || sprite instanceof TreeTile) &&
-													sprite.collides(guard)) {
+			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(guard)) {
 				return false;
 			}
 		}
@@ -141,7 +159,7 @@ public class Player extends Sprite implements Movable {
 	public Sprite getRidingVessel() {
 		return ridingVessel;
 	}
-
+	
 	/**
 	 * @param ridingVessel the ridingVessel to set
 	 */
@@ -149,4 +167,20 @@ public class Player extends Sprite implements Movable {
 		this.ridingVessel = ridingVessel;
 	}
 	
+	public void onCollision(Sprite other) { 
+	
+		if(other.hasTag(Sprite.HAZARD) && getRidingVessel() == null) {
+			dieOnce();
+		}
+		
+		/** check whether hitting the extra life */
+		if(other instanceof ExtraLife) {
+			ExtraLife.resetExtraLife();
+			lifeUp();
+		}
+		
+		if(other instanceof Hole) {
+			((Hole)other).setfilled();
+		}
+	}
 }
