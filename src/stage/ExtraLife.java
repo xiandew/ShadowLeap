@@ -10,7 +10,9 @@ import utilities.Movable;
 public class ExtraLife extends Sprite implements Movable{
 	
 	private static final String EXTRALIFE_SRC = "assets/extralife.png";
-	private static final boolean HAZARD = false;
+	
+	/** Nanoseconds `divide` TO_SEC = seconds */
+	public static final double TO_SEC = 1E9;
 	
 	/** time in seconds*/
 	private static final int MIN_WAIT_TIME = 25;
@@ -24,7 +26,7 @@ public class ExtraLife extends Sprite implements Movable{
 	private Vehicle ridingLog;
 	private float relativeX = 0;
 	
-	private int waitTime;
+	private int  waitTime;
 	private long createTime;
 	private long timeSinceAppear = 0;
 	
@@ -38,16 +40,16 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 	
 	public ExtraLife(Vehicle ridingLog) {
-		super(EXTRALIFE_SRC, ridingLog.getX(), ridingLog.getY(), HAZARD);
+		super(EXTRALIFE_SRC, ridingLog.getX(), ridingLog.getY());
 		this.ridingLog = ridingLog;
 		this.createTime = System.nanoTime();
-		this.waitTime = MIN_WAIT_TIME +
-							random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
+		this.waitTime = MIN_WAIT_TIME + random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
 	}
 	
 	/** choose the random log */
 	public static Vehicle randomLog() {
 		ArrayList<Sprite> logs = new ArrayList<>();
+		
 		for(Sprite sprite : World.getSprites()) {
 			if(sprite instanceof Log || sprite instanceof LongLog) {
 				logs.add(sprite);
@@ -57,8 +59,7 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 	
 	public void render() {
-		int timeSinceCreate =
-				(int) ((System.nanoTime() - createTime) / World.TO_SEC);
+		int timeSinceCreate = (int) ((System.nanoTime() - createTime) / TO_SEC);
 		
 		/** show up and create next extra life when the wait time passed. */
 		if(timeSinceCreate >= waitTime) {
@@ -76,8 +77,7 @@ public class ExtraLife extends Sprite implements Movable{
 	public float validateX(float x) {
 		int halfLogWidth = ridingLog.getImage().getWidth() / 2;
 		
-		if(x <= -halfLogWidth && direction == -1 ||
-				x >= halfLogWidth && direction == 1) {
+		if(x <= -halfLogWidth && direction == -1 || x >= halfLogWidth && direction == 1) {
 			direction *= (-1);
 			return x + 2 * direction * World.TILE_WIDTH;
 		}
@@ -92,8 +92,7 @@ public class ExtraLife extends Sprite implements Movable{
 			return;
 		}
 		
-		int appearTime =
-			(int) ((System.nanoTime() - createTime) / World.TO_SEC - waitTime);
+		int appearTime = (int) ((System.nanoTime() - createTime) / TO_SEC - waitTime);
 		
 		if(appearTime % PAUSE == 0 && appearTime != timeSinceAppear){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
@@ -104,10 +103,11 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 	
 	public static void resetExtraLife() {
-		for(Sprite sprite: World.getSprites()) {
+		ArrayList<Sprite> sprites = World.getSprites();
+		
+		for(Sprite sprite : sprites) {
 			if(sprite instanceof ExtraLife) {
-				World.getSprites().set(
-						World.getSprites().indexOf(sprite), new ExtraLife());
+				sprites.set(sprites.indexOf(sprite), new ExtraLife());
 				break;
 			}
 		}

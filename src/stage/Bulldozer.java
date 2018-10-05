@@ -6,18 +6,19 @@ public class Bulldozer extends Vehicle {
 	private static final String BULLDOZER_SRC = "assets/Bulldozer.png";
 	
 	private static final float SPEED = 0.05f;
-	private static final boolean HAZARD = false;
 	
 	public Bulldozer(float x, float y, int direction) {
-		super(BULLDOZER_SRC, x, y, SPEED, direction, HAZARD);
+		super(BULLDOZER_SRC, x, y, SPEED, direction, new String[] { Sprite.SOLID });
 	}
 	
 	/** Push the player if making contact with it */
 	public void move(Input input, int delta) {
 		super.move(input, delta);
-		if(collides(World.getPlayer())) {
-			World.getPlayer().setX(World.getPlayer().getX() +
-										getSpeed() * getDirection() * delta);
+		
+		Player player = World.getPlayer();
+		if(collides(player)) {
+			
+			player.setX(player.getX() + getSpeed() * getDirection() * delta);
 		}
 	}
 }

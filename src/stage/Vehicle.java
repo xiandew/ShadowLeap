@@ -7,23 +7,28 @@ public abstract class Vehicle extends Sprite implements Movable {
 	/** The speed of vehicles, in pixels per millisecond */
 	private float speed;
 	
-	/** -1 for left, 1 for right */
+	/** left: -1, right: 1 */
 	private int direction;
 	
 	/**
 	 * Initialise a vehicle with moving direction at (x, y).
 	 */
-	public Vehicle(String vehicleSrc, float x, float y,
-							float speed, int direction, boolean isHazard) {
-		super(vehicleSrc, x, y, isHazard);
+	public Vehicle(String vehicleSrc, float x, float y, float speed, int direction) {
+		super(vehicleSrc, x, y);
+		this.speed = speed;
+		this.direction = direction;
+	}
+	
+	public Vehicle(String vehicleSrc, float x, float y, float speed, int direction, String[] tags) {
+		super(vehicleSrc, x, y, tags);
 		this.speed = speed;
 		this.direction = direction;
 	}
 	
 	public float validateX(float x) {
-		if(x < - this.getImage().getWidth() / 2 && getDirection() == -1 ||
-				x > App.SCREEN_WIDTH +
-						this.getImage().getWidth() / 2 && getDirection() == 1) {
+		if(getDirection() == -1 && x < -getImage().getWidth() / 2 ||
+			getDirection() == 1 && x > getImage().getWidth() / 2 + App.SCREEN_WIDTH) {
+			
 			return (App.SCREEN_WIDTH - x);
 		}
 		return x;
@@ -31,32 +36,26 @@ public abstract class Vehicle extends Sprite implements Movable {
 	
 	/**
 	 * Update the movement of a vehicle.
+	 * @param input Place holder
 	 * @param delta Make sure the objects move at the same speed
 	 */
 	public void move(Input input, int delta) {
-		super.setX((float) validateX((super.getX() +
-									getSpeed() * getDirection() * delta)));
+		setX((float) validateX((getX() + getSpeed() * getDirection() * delta)));
 	}
 	
 	/**
 	 * reverse the direction
 	 */
-	public void reverseDirection() {
-		this.direction *= (-1);
-	}
+	public void reverseDirection() { this.direction *= (-1); }
 	
 	/**
 	 * @return the speed
 	 */
-	public float getSpeed() {
-		return speed;
-	}
+	public float getSpeed() { return speed; }
 
 	/**
 	 * @return the direction
 	 */
-	public int getDirection() {
-		return direction;
-	}
+	public int getDirection() { return direction; }
 	
 }

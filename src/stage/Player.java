@@ -19,8 +19,6 @@ public class Player extends Sprite implements Movable {
 	private static final int INITIAL_LIVES_Y = 744;
 	private static final int LIVES_SEPARATION = 32;
 	
-	private static final boolean HAZARD = false;
-	
 	/** Keep the lives in the next Stage */
 	private static int lives = INITIAL_LIVES;
 	
@@ -33,7 +31,7 @@ public class Player extends Sprite implements Movable {
 	private Player guard;
 	
 	public Player() {
-		super(PLAYER_SRC, INITIAL_X, INITIAL_Y, HAZARD);
+		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
 		try {
 			this.livesImg = new Image(LIVES_SRC);
 		} catch (SlickException e) {
@@ -42,14 +40,15 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	public Player(Player player) {
-		super(PLAYER_SRC, player.getX(), player.getY(), HAZARD);
+		super(PLAYER_SRC, player.getX(), player.getY());
 	}
 	
 	public void render() {
 		super.render();
+		
+		/** draw the lives */
 		for(int i=0; i<lives; i++) {
-			livesImg.drawCentered(
-					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
+			livesImg.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
 	}
 	
@@ -94,7 +93,7 @@ public class Player extends Sprite implements Movable {
 	 * Validate x, y before update.
 	 */
 	public float validateX(float x) {
-		if(x < World.TILE_WIDTH/2 || x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+		if(x <= World.TILE_WIDTH/2 || x >= App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			return getX();
 		}
 		return x;
@@ -128,8 +127,7 @@ public class Player extends Sprite implements Movable {
 		guard.setY(newY);
 		
 		for(Sprite sprite : World.getSprites()) {
-			if((sprite instanceof Bulldozer || sprite instanceof TreeTile) &&
-													sprite.collides(guard)) {
+			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(guard)) {
 				return false;
 			}
 		}
@@ -167,7 +165,7 @@ public class Player extends Sprite implements Movable {
 	
 	public void onCollision(Sprite other) { 
 	
-		if(other.ifHazard() && getRidingVessel() == null) {
+		if(other.hasTag(Sprite.HAZARD) && getRidingVessel() == null) {
 			dieOnce();
 		}
 		

@@ -9,9 +9,6 @@ import utilities.Movable;
 
 public class World {
 	
-	/** the number to divide when converting Nanosecond to second */
-	public static final double TO_SEC = 1E9;
-	
 	/** tile width, in pixels */
 	public static final int TILE_WIDTH = 48;
 	
@@ -62,7 +59,7 @@ public class World {
 			if(sprite != player && sprite.collides(player)) {
 				player.onCollision(sprite);
 			}
-		}		
+		}
 		
 		/** level up when all of the holes are filled */
 		if(Hole.getNumFilledHoles() == NUM_HOLES) {

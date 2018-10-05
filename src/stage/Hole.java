@@ -3,7 +3,6 @@ package stage;
 public class Hole extends Sprite {
 	
 	private static final String FROG_SRC = "assets/frog.png";
-	private static final boolean HAZARD = false;
 	
 	private static final int HOLES_SEPARATION = 192;
 	private static final int HOLES_Y = 48;
@@ -13,7 +12,7 @@ public class Hole extends Sprite {
 	private boolean isfilled = false;
 	
 	public Hole(float x, float y) {
-		super(FROG_SRC, x, y, HAZARD);
+		super(FROG_SRC, x, y);
 	}
 	
 	public void render() {
@@ -23,19 +22,22 @@ public class Hole extends Sprite {
 	}
 	
 	public void setfilled() {
+		Player player = World.getPlayer();
 		if(isfilled) {
-			World.getPlayer().dieOnce();
+			player.dieOnce();
 			return;
 		}
 		isfilled = true;
-		World.getPlayer().resetPosition();
+		player.resetPosition();
 		numFilledHoles++;
 	}
 	
 	public static void initialHoles() {
+		
 		for(int i=0; i<World.NUM_HOLES; i++) {
-			World.getSprites().add(
-					new Hole(FIRST_HOLE_X + i * HOLES_SEPARATION, HOLES_Y));
+			
+			int holeX = FIRST_HOLE_X + i * HOLES_SEPARATION;
+			World.getSprites().add(new Hole(holeX, HOLES_Y));
 		}
 		numFilledHoles = 0;
 	}
