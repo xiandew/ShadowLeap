@@ -10,9 +10,6 @@ public abstract class Vehicle extends Sprite implements Movable {
 	/** -1 for left, 1 for right */
 	private int direction;
 	
-	/** whether contact with the player*/
-	private boolean isContact = false;
-	
 	/**
 	 * Initialise a vehicle with moving direction at (x, y).
 	 */
@@ -49,20 +46,6 @@ public abstract class Vehicle extends Sprite implements Movable {
 		this.direction *= (-1);
 	}
 	
-	/**
-	 * @return the isContact
-	 */
-	public boolean ifContact() {
-		return isContact;
-	}
-
-	/**
-	 * @param isContact the isContact to set
-	 */
-	public void setContact(boolean isContact) {
-		this.isContact = isContact;
-	}
-
 	/**
 	 * @return the speed
 	 */

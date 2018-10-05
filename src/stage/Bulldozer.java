@@ -15,7 +15,7 @@ public class Bulldozer extends Vehicle {
 	/** Push the player if making contact with it */
 	public void move(Input input, int delta) {
 		super.move(input, delta);
-		if(super.ifContact()) {
+		if(collides(World.getPlayer())) {
 			World.getPlayer().setX(getX() + World.TILE_WIDTH);
 		}
 	}

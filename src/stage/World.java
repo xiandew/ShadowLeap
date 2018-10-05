@@ -81,10 +81,6 @@ public class World {
 					player.lifeUp();
 				}
 				
-				if(sprite instanceof Vehicle) {					
-					((Vehicle)sprite).setContact(true);
-				}
-				
 				if(sprite instanceof Hole) {
 					((Hole)sprite).setfilled();
 					
@@ -95,8 +91,6 @@ public class World {
 					}
 				}
 				
-			}else if(sprite instanceof Vehicle) {
-				((Vehicle)sprite).setContact(false);
 			}
 		}		
 		

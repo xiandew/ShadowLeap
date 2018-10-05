@@ -15,7 +15,7 @@ public abstract class Vessel extends Vehicle implements Rideable {
 	/** carry the player if the player is above of the vessel */
 	public void move(Input input, int delta) {
 		super.move(input, delta);
-		if(super.ifContact()) {
+		if(collides(World.getPlayer())) {
 			carry(input, delta);
 		}else if(World.getPlayer().getRidingVessel() == this) {
 			World.getPlayer().setRidingVessel(null);
