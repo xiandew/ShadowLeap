@@ -20,6 +20,7 @@ public abstract class Sprite {
 		this.x = x;
 		this.y = y;
 		this.isHazard = isHazard;
+		this.bounds = new BoundingBox(this.image, this.x, this.y);
 	}
 	
 	/**
@@ -41,6 +42,7 @@ public abstract class Sprite {
 	 */
 	public void setX(float x) {
 		this.x = x;
+		this.bounds.setX(x);
 	}
 	
 	/**
@@ -58,6 +60,7 @@ public abstract class Sprite {
 			return;
 		}
 		this.y = y;
+		this.bounds.setY(y);
 	}
 	
 	/**
@@ -79,10 +82,6 @@ public abstract class Sprite {
 	 * @param other The other sprite
 	 */
 	public boolean collides(Sprite other) {
-		bounds =
-				new BoundingBox(this.image, this.x, this.y);
-		BoundingBox otherBounds =
-				new BoundingBox(other.getImage(), other.getX(), other.getY());
-		return bounds.intersects(otherBounds);
+		return bounds.intersects(other.bounds);
 	}
 }

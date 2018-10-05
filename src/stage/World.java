@@ -41,11 +41,9 @@ public class World {
 	public void initialiseWorld() {
 		
 		readLevelData();
-		
 		Hole.initialHoles();
 		
 		player = new Player();
-		
 		sprites.add(player);
 		sprites.add(new ExtraLife());
 	}
@@ -59,42 +57,17 @@ public class World {
 			}
 		}
 		
-		/** check whether the player is riding */
-		for(Sprite sprite : sprites) {
-			if(sprite instanceof Vessel && player.collides(sprite)) {
-				player.setRidingVessel(sprite);
-			}
-		}
-		
-		/** check for hazard and non-hazard collisions */
+		/** check for collisions */
 		for(Sprite sprite : sprites) {
 			if(sprite != player && sprite.collides(player)) {
-				
-				if(sprite.ifHazard() && player.getRidingVessel() == null) {
-					player.dieOnce();
-					break;
-				}
-				
-				/** check whether hitting the extra life */
-				if(sprite instanceof ExtraLife) {
-					resetExtraLife();
-					player.lifeUp();
-				}
-				
-				if(sprite instanceof Hole) {
-					((Hole)sprite).setfilled();
-					
-					/** level up when all of the holes are filled */
-					if(Hole.getNumFilledHoles() == NUM_HOLES) {
-						levelUp();
-						break;
-					}
-				}
-				
+				player.onCollision(sprite);
 			}
 		}		
 		
-		
+		/** level up when all of the holes are filled */
+		if(Hole.getNumFilledHoles() == NUM_HOLES) {
+			levelUp();
+		}
 		
 	}
 	

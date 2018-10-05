@@ -69,6 +69,13 @@ public class Player extends Sprite implements Movable {
 		
 		this.setX(guard.getX());
 		this.setY(guard.getY());
+		
+		/** check whether the player is riding */
+		for(Sprite sprite : World.getSprites()) {
+			if(sprite instanceof Vessel && collides(sprite)) {
+				setRidingVessel(sprite);
+			}
+		}
 	}
 	
 	
@@ -149,4 +156,20 @@ public class Player extends Sprite implements Movable {
 		this.ridingVessel = ridingVessel;
 	}
 	
+	public void onCollision(Sprite other) { 
+	
+		if(other.ifHazard() && getRidingVessel() == null) {
+			dieOnce();
+		}
+		
+		/** check whether hitting the extra life */
+		if(other instanceof ExtraLife) {
+			World.resetExtraLife();
+			lifeUp();
+		}
+		
+		if(other instanceof Hole) {
+			((Hole)other).setfilled();
+		}
+	}
 }
