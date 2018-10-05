@@ -60,8 +60,6 @@ public class Player extends Sprite implements Movable {
 	@Override
 	public void move(Input input, int delta) {
 		
-		checkPlayerState();
-		
 		if(!canGuardMove(input)) {
 			return;
 		}
@@ -69,23 +67,29 @@ public class Player extends Sprite implements Movable {
 		this.setX(guard.getX());
 		this.setY(guard.getY());
 		
+		checkPlayerState();
+	}
+	
+	
+	/** check the state of the player */
+	private void checkPlayerState() {
+		
+		/** exit if the player has no lives */
+		if(Player.lives < 0) {
+			System.exit(0);
+		}
+		
+		/** die once if it is off screen */
+		if( this.getX() < World.TILE_WIDTH/2 ||
+			this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+			dieOnce();
+		}
+		
 		/** check whether the player is riding */
 		for(Sprite sprite : World.getSprites()) {
 			if(sprite instanceof Vessel && collides(sprite)) {
 				setRidingVessel(sprite);
 			}
-		}
-	}
-	
-	
-	/** check the state of the player before moving */
-	private void checkPlayerState() {
-		if(Player.lives < 0) {
-			System.exit(0);
-		}
-		if(this.getX() < World.TILE_WIDTH/2 ||
-				this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
-			dieOnce();
 		}
 	}
 	
