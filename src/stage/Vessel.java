@@ -1,6 +1,8 @@
 package stage;
 
 import org.newdawn.slick.Input;
+
+import utilities.Movable;
 import utilities.Rideable;
 
 public abstract class Vessel extends Vehicle implements Rideable {
@@ -16,15 +18,14 @@ public abstract class Vessel extends Vehicle implements Rideable {
 	public void move(Input input, int delta) {
 		super.move(input, delta);
 		if(collides(World.getPlayer())) {
-			carry(input, delta);
+			carry(World.getPlayer(), delta);
 		}else if(World.getPlayer().getRidingVessel() == this) {
 			World.getPlayer().setRidingVessel(null);
 		}
 	}
 	
-	public void carry(Input input, int delta) {
-		World.getPlayer().setX(
-				World.getPlayer().validateX(World.getPlayer().getX() +
+	public void carry(Sprite sprite, int delta) {
+		sprite.setX(((Movable)sprite).validateX(sprite.getX() +
 										getSpeed() * getDirection() * delta));
 	}
 	

@@ -16,7 +16,8 @@ public class Bulldozer extends Vehicle {
 	public void move(Input input, int delta) {
 		super.move(input, delta);
 		if(collides(World.getPlayer())) {
-			World.getPlayer().setX(getX() + World.TILE_WIDTH);
+			World.getPlayer().setX(World.getPlayer().getX() +
+										getSpeed() * getDirection() * delta);
 		}
 	}
 }

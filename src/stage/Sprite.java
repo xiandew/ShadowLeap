@@ -56,9 +56,6 @@ public abstract class Sprite {
 	 * @param y the y to set
 	 */
 	public void setY(float y) {
-		if(y >= App.SCREEN_HEIGHT) {
-			return;
-		}
 		this.y = y;
 		this.bounds.setY(y);
 	}

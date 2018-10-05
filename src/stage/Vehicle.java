@@ -20,7 +20,6 @@ public abstract class Vehicle extends Sprite implements Movable {
 		this.direction = direction;
 	}
 	
-	
 	public float validateX(float x) {
 		if(x < - this.getImage().getWidth() / 2 && getDirection() == -1 ||
 				x > App.SCREEN_WIDTH +

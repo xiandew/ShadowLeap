@@ -53,7 +53,6 @@ public class ExtraLife extends Sprite implements Movable{
 				logs.add(sprite);
 			}
 		}
-		
 		return (Vehicle) logs.get(random.nextInt(logs.size()));
 	}
 	
@@ -69,7 +68,7 @@ public class ExtraLife extends Sprite implements Movable{
 		
 		/** update the extra life when its lifetime passed */
 		if(timeSinceCreate >= waitTime + LIFETIME) {
-			World.resetExtraLife();
+			resetExtraLife();
 		}
 	}
 	
@@ -89,6 +88,7 @@ public class ExtraLife extends Sprite implements Movable{
 	@Override
 	public void move(Input input, int delta) {
 		if(!isAppear) {
+			((Vessel)ridingLog).carry(this, delta);
 			return;
 		}
 		
@@ -101,6 +101,16 @@ public class ExtraLife extends Sprite implements Movable{
 		}
 		
 		setX(ridingLog.getX() + relativeX);
+	}
+	
+	public static void resetExtraLife() {
+		for(Sprite sprite: World.getSprites()) {
+			if(sprite instanceof ExtraLife) {
+				World.getSprites().set(
+						World.getSprites().indexOf(sprite), new ExtraLife());
+				break;
+			}
+		}
 	}
 	
 	public boolean collides(Sprite other) {

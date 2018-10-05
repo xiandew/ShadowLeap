@@ -103,16 +103,6 @@ public class World {
 		return player;
 	}
 	
-	public static void resetExtraLife() {
-		
-		for(Sprite sprite: sprites) {
-			if(sprite instanceof ExtraLife) {
-				sprites.set(sprites.indexOf(sprite), new ExtraLife());
-				break;
-			}
-		}
-	}
-	
 	private void readLevelData() {
 		sprites = new ArrayList<>();
 		try (BufferedReader br =

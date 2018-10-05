@@ -91,32 +91,41 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * Validate the x before update.
+	 * Validate x, y before update.
 	 */
 	public float validateX(float x) {
-		if(x < World.TILE_WIDTH/2 ||
-				x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+		if(x < World.TILE_WIDTH/2 || x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			return getX();
 		}
 		return x;
+	}
+	public float validateY(float y) {
+		if(y <= 0 || y >= App.SCREEN_HEIGHT) {
+			return getY();
+		}
+		return y;
 	}
 	
 	/** prevent the player from crashing into the bulldozer */
 	private boolean canGuardMove(Input input) {
 		guard = new Player(this);
+		float newX = getX(), newY = getY();
 		
 		if(input.isKeyPressed(Input.KEY_LEFT)) {
-			guard.setX(validateX(getX() - World.TILE_WIDTH));
+			newX = validateX(getX() - World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_RIGHT)) {
-			guard.setX(validateX(getX() + World.TILE_WIDTH));
+			newX = validateX(getX() + World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_UP)) {			
-			guard.setY(getY() - World.TILE_WIDTH);
+			newY = validateY(getY() - World.TILE_WIDTH);
 		}
 		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			guard.setY(getY() + World.TILE_WIDTH);
+			newY = validateY(getY() + World.TILE_WIDTH);
 		}
+		
+		guard.setX(newX);
+		guard.setY(newY);
 		
 		for(Sprite sprite : World.getSprites()) {
 			if((sprite instanceof Bulldozer || sprite instanceof TreeTile) &&
@@ -148,7 +157,7 @@ public class Player extends Sprite implements Movable {
 	public Sprite getRidingVessel() {
 		return ridingVessel;
 	}
-
+	
 	/**
 	 * @param ridingVessel the ridingVessel to set
 	 */
@@ -164,7 +173,7 @@ public class Player extends Sprite implements Movable {
 		
 		/** check whether hitting the extra life */
 		if(other instanceof ExtraLife) {
-			World.resetExtraLife();
+			ExtraLife.resetExtraLife();
 			lifeUp();
 		}
 		
