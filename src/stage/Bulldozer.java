@@ -11,7 +11,11 @@ public class Bulldozer extends Vehicle {
 		super(BULLDOZER_SRC, x, y, SPEED, direction, new String[] { Sprite.SOLID });
 	}
 	
-	/** Push the player if making contact with it */
+	/**
+	 * Push the player if making contact with it
+	 * @param input Place holder
+	 * @param delta Make sure the same rate with different FPS
+	 */
 	public void move(Input input, int delta) {
 		super.move(input, delta);
 		

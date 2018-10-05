@@ -7,7 +7,7 @@ public class Turtles extends Vessel {
 	
 	private static final double TO_SEC = 1E9;
 	
-	/** time in seconds*/
+	/** time in seconds */
 	private static final int BREATH_TIME = 7;
 	private static final int DIVE_TIME = 2;
 	

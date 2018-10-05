@@ -11,7 +11,11 @@ public abstract class Vessel extends Vehicle implements Rideable {
 		super(vehicleSrc, x, y, speed, direction);
 	}
 	
-	/** carry the player if the player is above of the vessel */
+	/**
+	 * carry the player if the player is above of the vessel
+	 * @param input Pass it to super constructor as a place holder
+	 * @param delta Make sure the same rate with different FPS
+	 */
 	public void move(Input input, int delta) {
 		super.move(input, delta);
 		

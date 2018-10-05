@@ -53,9 +53,9 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * Control the movement of the player
-	 * @param input Left, Right, Up, Down
-	 * @param delta
+	 * Control the movement of the player.
+	 * @param input Left, Right, Up, Down.
+	 * @param delta Make sure the same rate.
 	 */
 	@Override
 	public void move(Input input, int delta) {

@@ -46,7 +46,7 @@ public class ExtraLife extends Sprite implements Movable{
 		this.waitTime = MIN_WAIT_TIME + random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
 	}
 	
-	/** choose the random log */
+	/** @return the random log */
 	public static Vehicle randomLog() {
 		ArrayList<Sprite> logs = new ArrayList<>();
 		
@@ -84,7 +84,11 @@ public class ExtraLife extends Sprite implements Movable{
 		return x;
 	}
 
-	/** move along the log */
+	/**
+	 * move along the log
+	 * @param input Place holder
+	 * @param delta Make sure the same rate with different FPS
+	 */
 	@Override
 	public void move(Input input, int delta) {
 		if(!isAppear) {

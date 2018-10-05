@@ -43,7 +43,7 @@ public class Hole extends Sprite {
 	}
 	
 	/**
-	 * @return the numFilledHoles
+	 * @return the number of filled holes
 	 */
 	public static int getNumFilledHoles() {
 		return numFilledHoles;

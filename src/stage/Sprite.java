@@ -69,7 +69,7 @@ public abstract class Sprite {
 	public void render() { image.drawCentered(x, y); }
 	
 	/**
-	 * Decide whether two sprites collide.
+	 * Tell whether two sprites collide.
 	 * @param other The other sprite
 	 */
 	public boolean collides(Sprite other) {
