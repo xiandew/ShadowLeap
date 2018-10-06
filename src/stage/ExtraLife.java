@@ -24,13 +24,17 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	/** the random chosen log to ride */
 	private Vehicle ridingLog;
+	
+	/** x of the extra life relative to the center of the log */
 	private float relativeX = 0;
 	
 	private int  waitTime;
 	private long createTime;
-	private long timeSinceAppear = 0;
 	
-	/** 1 for right, -1 for left */
+	/** records the time that the extra life made the last move */
+	private long lastMoveTime = 0;
+	
+	/** right: 1, left: -1 */
 	private int direction = 1;
 	
 	private boolean isAppear = false;
@@ -75,7 +79,7 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	@Override
 	public float validateX(float x) {
-		int halfLogWidth = ridingLog.getImage().getWidth() / 2;
+		float halfLogWidth = ridingLog.getImage().getWidth() / 2;
 		
 		if(x <= -halfLogWidth && direction == -1 || x >= halfLogWidth && direction == 1) {
 			direction *= (-1);
@@ -90,19 +94,13 @@ public class ExtraLife extends Sprite implements Movable{
 	 * @param delta Make sure the same rate with different FPS
 	 */
 	@Override
-	public void move(Input input, int delta) {
-		if(!isAppear) {
-			((Vessel)ridingLog).carry(this, delta);
-			return;
-		}
-		
+	public void move(Input input, int delta) {		
 		int appearTime = (int) ((System.nanoTime() - createTime) / TO_SEC - waitTime);
 		
-		if(appearTime % PAUSE == 0 && appearTime != timeSinceAppear){
+		if(isAppear && appearTime % PAUSE == 0 && appearTime != lastMoveTime){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
-			timeSinceAppear = appearTime;
+			lastMoveTime = appearTime;
 		}
-		
 		setX(ridingLog.getX() + relativeX);
 	}
 	

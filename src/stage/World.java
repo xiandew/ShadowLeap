@@ -15,20 +15,20 @@ public class World {
 	public static final int NUM_HOLES = 5;
 	
 	/** level data */
-	private static final String FIRST_LEVEL_DATA = "assets/levels/0.lvl";
-	private static final String SECOND_LEVEL_DATA = "assets/levels/1.lvl";
+	private static final String[] LEVEL_DATA =
+			new String[] {"assets/levels/0.lvl", "assets/levels/1.lvl"};
 	
-	/** level data indexes*/
-	private static final int INDEX_OBJECT = 0;
-	private static final int INDEX_X = 1;
-	private static final int INDEX_Y = 2;
+	/** level data indexes */
+	private static final int INDEX_OBJECT    = 0;
+	private static final int INDEX_X         = 1;
+	private static final int INDEX_Y         = 2;
 	private static final int INDEX_DIRECTION = 3;
 	
 	private int currentLevel = 0;
-	private String currentLevelData = FIRST_LEVEL_DATA;
 	
 	/** all sprites */
 	private static ArrayList<Sprite> sprites;
+	
 	private static Player player;
 	
 	public World() {
@@ -76,12 +76,10 @@ public class World {
 	
 	/** change the level data. Exit if the second level completed */
 	private void levelUp() {
-		if(currentLevel == 1) {
+		currentLevel ++;
+		if(currentLevel > 1) {
 			System.exit(0);
 		}
-		
-		currentLevel ++;
-		currentLevelData = SECOND_LEVEL_DATA;
 		
 		initialiseWorld();
 	}
@@ -103,7 +101,7 @@ public class World {
 	private void readLevelData() {
 		sprites = new ArrayList<>();
 		try (BufferedReader br =
-				new BufferedReader(new FileReader(currentLevelData))) {
+				new BufferedReader(new FileReader(LEVEL_DATA[currentLevel]))) {
 			
 			String line;
 			while ((line = br.readLine()) != null) {

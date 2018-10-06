@@ -11,15 +11,15 @@ public class Turtles extends Vessel {
 	private static final int BREATH_TIME = 7;
 	private static final int DIVE_TIME = 2;
 	
-	private static long timeAppear;
+	private static long lastAppearTime;
 	
 	public Turtles(float x, float y, int direction) {
 		super(TURTLES_SRC, x, y, SPEED, direction);
-		timeAppear = System.nanoTime();
+		lastAppearTime = System.nanoTime();
 	}
 	
 	public void render() {
-		int timeSinceAppear = (int) ((System.nanoTime() - timeAppear) / TO_SEC);
+		int timeSinceAppear = (int) ((System.nanoTime() - lastAppearTime) / TO_SEC);
 		
 		/** shows above the water if the the breath time has not passed */
 		if(timeSinceAppear < BREATH_TIME) {
@@ -28,7 +28,7 @@ public class Turtles extends Vessel {
 		
 		/** when the turtle is to resurface */
 		}else if(timeSinceAppear >= BREATH_TIME + DIVE_TIME) {
-			timeAppear = System.nanoTime();
+			lastAppearTime = System.nanoTime();
 		
 		/** when diving and the player is above of it */
 		}else if(World.getPlayer().getRidingVessel() == this){
