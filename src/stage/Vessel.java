@@ -20,15 +20,14 @@ public abstract class Vessel extends Vehicle implements Rideable {
 		
 		Player player = World.getPlayer();
 		if(collides(player)) {
-			carry(input, delta);
+			carry(player, delta);
 			
 		}else if(player.getRidingVessel() == this) {
 			player.setRidingVessel(null);
 		}
 	}
 	
-	public void carry(Input input, int delta) {
-		Player player = World.getPlayer();
+	public void carry(Player player, int delta) {
 		player.setX(player.validateX(player.getX() + getSpeed() * getDirection() * delta));
 	}
 	
