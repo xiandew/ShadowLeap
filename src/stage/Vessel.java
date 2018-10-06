@@ -2,9 +2,7 @@ package stage;
 
 import org.newdawn.slick.Input;
 
-import utilities.Rideable;
-
-public abstract class Vessel extends Vehicle implements Rideable {
+public abstract class Vessel extends Vehicle {
 	
 	public Vessel(String vehicleSrc, float x, float y, float speed, int direction) {
 		super(vehicleSrc, x, y, speed, direction);
@@ -20,15 +18,11 @@ public abstract class Vessel extends Vehicle implements Rideable {
 		
 		Player player = World.getPlayer();
 		if(collides(player)) {
-			carry(player, delta);
+			player.setX(player.validateX(player.getX() + getSpeed() * getDirection() * delta));
 			
 		}else if(player.getRidingVessel() == this) {
 			player.setRidingVessel(null);
 		}
-	}
-	
-	public void carry(Player player, int delta) {
-		player.setX(player.validateX(player.getX() + getSpeed() * getDirection() * delta));
 	}
 	
 }
