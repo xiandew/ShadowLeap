@@ -19,9 +19,9 @@ public class World {
 			new String[] {"assets/levels/0.lvl", "assets/levels/1.lvl"};
 	
 	/** level data indexes */
-	private static final int INDEX_OBJECT = 0;
-	private static final int INDEX_X = 1;
-	private static final int INDEX_Y = 2;
+	private static final int INDEX_OBJECT    = 0;
+	private static final int INDEX_X         = 1;
+	private static final int INDEX_Y         = 2;
 	private static final int INDEX_DIRECTION = 3;
 	
 	private int currentLevel = 0;
