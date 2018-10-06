@@ -28,7 +28,7 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	private int  waitTime;
 	private long createTime;
-	private long timeSinceAppear = 0;
+	private long lastMoveTime = 0;
 	
 	/** 1 for right, -1 for left */
 	private int direction = 1;
@@ -98,9 +98,9 @@ public class ExtraLife extends Sprite implements Movable{
 		
 		int appearTime = (int) ((System.nanoTime() - createTime) / TO_SEC - waitTime);
 		
-		if(appearTime % PAUSE == 0 && appearTime != timeSinceAppear){
+		if(appearTime % PAUSE == 0 && appearTime != lastMoveTime){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
-			timeSinceAppear = appearTime;
+			lastMoveTime = appearTime;
 		}
 		
 		setX(ridingLog.getX() + relativeX);
