@@ -79,7 +79,7 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	@Override
 	public float validateX(float x) {
-		int halfLogWidth = ridingLog.getImage().getWidth() / 2;
+		float halfLogWidth = ridingLog.getImage().getWidth() / 2;
 		
 		if(x <= -halfLogWidth && direction == -1 || x >= halfLogWidth && direction == 1) {
 			direction *= (-1);
@@ -94,19 +94,13 @@ public class ExtraLife extends Sprite implements Movable{
 	 * @param delta Make sure the same rate with different FPS
 	 */
 	@Override
-	public void move(Input input, int delta) {
-		if(!isAppear) {
-			((Vessel)ridingLog).carry(this, delta);
-			return;
-		}
-		
+	public void move(Input input, int delta) {		
 		int appearTime = (int) ((System.nanoTime() - createTime) / TO_SEC - waitTime);
 		
-		if(appearTime % PAUSE == 0 && appearTime != lastMoveTime){
+		if(isAppear && appearTime % PAUSE == 0 && appearTime != lastMoveTime){
 			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
 			lastMoveTime = appearTime;
 		}
-		
 		setX(ridingLog.getX() + relativeX);
 	}
 	

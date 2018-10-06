@@ -1,7 +1,7 @@
 package utilities;
 
-import stage.Sprite;
+import org.newdawn.slick.Input;
 
 public interface Rideable {
-	public void carry(Sprite sprite, int delta);
+	public void carry(Input input, int delta);
 }
