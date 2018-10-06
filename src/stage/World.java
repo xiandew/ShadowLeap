@@ -28,6 +28,7 @@ public class World {
 	
 	/** all sprites */
 	private static ArrayList<Sprite> sprites;
+	
 	private static Player player;
 	
 	public World() {
