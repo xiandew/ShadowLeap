@@ -24,13 +24,17 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	/** the random chosen log to ride */
 	private Vehicle ridingLog;
+	
+	/** x of the extra life relative to the center of the log */
 	private float relativeX = 0;
 	
 	private int  waitTime;
 	private long createTime;
+	
+	/** records the time that the extra life made the last move */
 	private long lastMoveTime = 0;
 	
-	/** 1 for right, -1 for left */
+	/** right: 1, left: -1 */
 	private int direction = 1;
 	
 	private boolean isAppear = false;
