@@ -11,7 +11,7 @@ public class Player extends Sprite implements Movable {
 	private static final String PLAYER_SRC = "assets/frog.png";
 	private static final String LIVES_SRC = "assets/lives.png";
 	
-	/** starting point of the player */
+	// starting point of the player
 	private static final int INITIAL_X = 512;
 	private static final int INITIAL_Y = 720;
 	
@@ -20,12 +20,11 @@ public class Player extends Sprite implements Movable {
 	private static final int INITIAL_LIVES_Y = 744;
 	private static final int LIVES_SEPARATION = 32;
 	
-	/** Keep the lives in the next Stage */
+	// make lives static to keep it in the next Stage
 	private static int lives = INITIAL_LIVES;
-	
 	private Image livesImg;
 	
-	/** the vessel that the player is riding */
+	// the vessel that the player is riding
 	private Sprite ridingVessel = null;
 	
 	public Player() {
@@ -37,10 +36,13 @@ public class Player extends Sprite implements Movable {
 		}
 	}
 	
+	/**
+	 * draws the player as well as the lives
+	 */
 	public void render() {
 		super.render();
 		
-		/** draw the lives */
+		// draw the lives
 		for(int i=0; i<lives; i++) {
 			livesImg.drawCentered(
 					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
@@ -48,7 +50,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * Control the movement of the player.
+	 * controls the movement of the player.
 	 * @param input Left, Right, Up, Down.
 	 * @param delta Make sure the same rate.
 	 */
@@ -66,30 +68,32 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	
-	/** check the state of the player */
+	/**
+	 * checks the state of the player.
+	 */
 	private void checkPlayerState() {
 		
-		/** exit if the player has no lives */
+		// exit if the player has no lives
 		if(Player.lives < 0) {
 			System.exit(0);
 		}
 		
-		/** die once if it is off screen */
+		// die once if it is off screen
 		if( this.getX() < World.TILE_WIDTH/2 ||
 			this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			dieOnce();
 		}
 		
-		/** check whether the player is riding */
+		// check whether the player is riding
 		for(Sprite sprite : World.getSprites()) {
 			if(sprite instanceof Vessel && collides(sprite)) {
-				setRidingVessel(sprite);
+				ridingVessel = sprite;
 			}
 		}
 	}
 	
 	/**
-	 * Validate x before update.
+	 * validates x before moving.
 	 */
 	public float validX(float x) {
 		return (x <= World.TILE_WIDTH/2 ||
@@ -99,7 +103,11 @@ public class Player extends Sprite implements Movable {
 		return (y <= 0 || y >= App.SCREEN_HEIGHT) ? getY() : y;
 	}
 	
-	// Prevent the player from solid tiles i.e. the bulldozers and the trees
+	/**
+	 * prevents the player from solid tiles i.e. the bulldozers and the trees
+	 * @param input Left, Right, Up, Down.
+	 * @return whether or not it is going to crash a solid tile.
+	 */
 	private boolean collidesSolid(Input input) {
 		
 		BoundingBox bounds = getBounds();
@@ -128,43 +136,55 @@ public class Player extends Sprite implements Movable {
 		
 	}
 	
+	/**
+	 * resets the player at the starting point.
+	 */
 	public void resetPosition() {
 		this.setX(INITIAL_X);
 		this.setY(INITIAL_Y);
 	}
-
+	
+	/**
+	 * deducts the player's lives by one and reset its position.
+	 */
 	public void dieOnce() {
 		Player.lives--;
 		this.resetPosition();
 	}
 	
+	/**
+	 * awards the player an extra life and reset the extra life.
+	 */
 	public void lifeUp() {
 		Player.lives++;
+		ExtraLife.resetExtraLife();
 	}
 	
 	/**
-	 * @return the ridingVessel
+	 * @return the riding vessel.
 	 */
 	public Sprite getRidingVessel() {
 		return ridingVessel;
 	}
 	
 	/**
-	 * @param ridingVessel the ridingVessel to set
+	 * set the riding vessel to null.
 	 */
-	public void setRidingVessel(Sprite ridingVessel) {
-		this.ridingVessel = ridingVessel;
+	public void resetRidingVessel() {
+		this.ridingVessel = null;
 	}
 	
+	/**
+	 * makes an action corresponding to the contacting sprite.
+	 * @param other The sprite that collides the player.
+	 */
 	public void onCollision(Sprite other) { 
 	
 		if(other.hasTag(Sprite.HAZARD) && getRidingVessel() == null) {
 			dieOnce();
 		}
 		
-		/** check whether hitting the extra life */
 		if(other instanceof ExtraLife) {
-			ExtraLife.resetExtraLife();
 			lifeUp();
 		}
 		

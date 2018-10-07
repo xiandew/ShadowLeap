@@ -21,7 +21,7 @@ public abstract class Vessel extends Vehicle {
 			player.setX(player.validX(player.getX() + getSpeed() * getDirection() * delta));
 			
 		}else if(player.getRidingVessel() == this) {
-			player.setRidingVessel(null);
+			player.resetRidingVessel();
 		}
 	}
 	

@@ -22,39 +22,47 @@ public class Hole extends Sprite {
 		super(FROG_SRC, x, y);
 	}
 	
-	
+	/**
+	 * render the frog in the hole when it has been filled.
+	 */
 	public void render() {
 		if(isfilled) {
 			super.render();
 		}
 	}
 	
+	/**
+	 * Fill a hole if it has not been filled.
+	 * Otherwise the player loses a life.
+	 */
 	public void setfilled() {
 		Player player = World.getPlayer();
+		
 		if(isfilled) {
 			player.dieOnce();
 			return;
 		}
 		isfilled = true;
-		numFilledHoles ++;
 		player.resetPosition();
+		
+		numFilledHoles ++;
 	}
 	
-	public static void initialHoles() {
-		numFilledHoles = 0;
-		
+	/**
+	 * Initialise unfilled holes.
+	 */
+	public static void initialHoles() {		
 		for(int i=0; i<World.NUM_HOLES; i++) {
 			
 			int holeX = FIRST_HOLE_X + i * HOLES_SEPARATION;
 			World.getSprites().add(new Hole(holeX, HOLES_Y));
 		}
 		
+		numFilledHoles = 0;		
 	}
 	
 	/**
 	 * @return the number of filled holes
 	 */
-	public static int getNumFilledHoles() {
-		return numFilledHoles;
-	}
+	public static int getNumFilledHoles() { return numFilledHoles; }
 }

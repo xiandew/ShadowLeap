@@ -4,6 +4,13 @@ import org.newdawn.slick.SlickException;
 
 import utilities.BoundingBox;
 
+/**
+ * The super class of all objects in the game.
+ * @param imageSrc The image src of the object
+ * @param x The initial x coordinate
+ * @param y 
+ * @param tags
+ */
 public abstract class Sprite {
 	// this is a defined constant to avoid typos
 	public final static String HAZARD = "hazard";
