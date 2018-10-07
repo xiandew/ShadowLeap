@@ -64,8 +64,7 @@ public class ExtraLife extends Sprite implements Movable{
 				logs.add(sprite);
 			}
 		}
-		//return (Vehicle) logs.get(random.nextInt(logs.size()));
-		return (Vehicle) logs.get(3);
+		return (Vehicle) logs.get(random.nextInt(logs.size()));
 	}
 	
 	/**
