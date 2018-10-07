@@ -24,8 +24,8 @@ public class ExtraLife extends Sprite implements Movable{
 	public static final long TO_SEC = (long) 1E9;
 	
 	// time in seconds
-	private static final int MIN_WAIT_TIME = 25;
-	private static final int MAX_WAIT_TIME = 35;
+	private static final int MIN_WAIT_TIME = 5;
+	private static final int MAX_WAIT_TIME = 5;
 	private static final int LIFETIME = 14;
 	private static final int PAUSE = 2;
 		
@@ -65,7 +65,8 @@ public class ExtraLife extends Sprite implements Movable{
 				logs.add(sprite);
 			}
 		}
-		return (Vehicle) logs.get(random.nextInt(logs.size()));
+		//return (Vehicle) logs.get(random.nextInt(logs.size()));
+		return (Vehicle) logs.get(3);
 	}
 	
 	/**
@@ -93,7 +94,7 @@ public class ExtraLife extends Sprite implements Movable{
 	@Override
 	public float validX(float x) {
 		BoundingBox bounds = getBounds();
-		bounds.setX(x);
+		bounds.setX(ridingLog.getX() + x);
 		
 		if(ridingLog.collides(bounds)) {
 			return x;
