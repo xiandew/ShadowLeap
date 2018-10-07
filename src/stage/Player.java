@@ -3,6 +3,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import utilities.BoundingBox;
 import utilities.Movable;
 
 public class Player extends Sprite implements Movable {
@@ -27,9 +28,6 @@ public class Player extends Sprite implements Movable {
 	/** the vessel that the player is riding */
 	private Sprite ridingVessel = null;
 	
-	/** Prevent the player from solid tiles i.e. the bulldozers and the trees*/
-	private Player guard;
-	
 	public Player() {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
 		try {
@@ -39,16 +37,13 @@ public class Player extends Sprite implements Movable {
 		}
 	}
 	
-	public Player(Player player) {
-		super(PLAYER_SRC, player.getX(), player.getY());
-	}
-	
 	public void render() {
 		super.render();
 		
 		/** draw the lives */
 		for(int i=0; i<lives; i++) {
-			livesImg.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
+			livesImg.drawCentered(
+					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
 	}
 	
@@ -60,12 +55,12 @@ public class Player extends Sprite implements Movable {
 	@Override
 	public void move(Input input, int delta) {
 		
-		if(!canGuardMove(input)) {
+		if(collidesSolid(input)) {
 			return;
 		}
 		
-		this.setX(guard.getX());
-		this.setY(guard.getY());
+		this.setX(getBounds().getX());
+		this.setY(getBounds().getY());
 		
 		checkPlayerState();
 	}
@@ -94,48 +89,40 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * Validate x, y before update.
+	 * Validate x before update.
 	 */
-	public float validateX(float x) {
-		if(x <= World.TILE_WIDTH/2 || x >= App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
-			return getX();
-		}
-		return x;
+	public float validX(float x) {
+		return (x <= World.TILE_WIDTH/2 ||
+				x >= App.SCREEN_WIDTH - World.TILE_WIDTH/2) ? getX() : x;
 	}
-	public float validateY(float y) {
-		if(y <= 0 || y >= App.SCREEN_HEIGHT) {
-			return getY();
-		}
-		return y;
+	private float validY(float y) {
+		return (y <= 0 || y >= App.SCREEN_HEIGHT) ? getY() : y;
 	}
 	
-	/** prevent the player from crashing into the bulldozer */
-	private boolean canGuardMove(Input input) {
-		guard = new Player(this);
-		float newX = getX(), newY = getY();
+	// Prevent the player from solid tiles i.e. the bulldozers and the trees
+	private boolean collidesSolid(Input input) {
+		
+		BoundingBox bounds = getBounds();
 		
 		if(input.isKeyPressed(Input.KEY_LEFT)) {
-			newX = validateX(getX() - World.TILE_WIDTH);
+			bounds.setX(validX(getX() - World.TILE_WIDTH));
 		}
 		if(input.isKeyPressed(Input.KEY_RIGHT)) {
-			newX = validateX(getX() + World.TILE_WIDTH);
+			bounds.setX(validX(getX() + World.TILE_WIDTH));
 		}
-		if(input.isKeyPressed(Input.KEY_UP)) {			
-			newY = validateY(getY() - World.TILE_WIDTH);
+		if(input.isKeyPressed(Input.KEY_UP)) {
+			bounds.setY(validY(getY() - World.TILE_WIDTH));
 		}
 		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			newY = validateY(getY() + World.TILE_WIDTH);
+			bounds.setY(validY(getY() + World.TILE_WIDTH));
 		}
-		
-		guard.setX(newX);
-		guard.setY(newY);
 		
 		for(Sprite sprite : World.getSprites()) {
-			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(guard)) {
-				return false;
+			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(bounds)) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 		
 	}
 	

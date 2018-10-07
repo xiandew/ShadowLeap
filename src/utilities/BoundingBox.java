@@ -9,6 +9,8 @@ import org.newdawn.slick.Image;
 public class BoundingBox {
 	private static final float FUZZ = 0.95f;
 	
+	private float x;
+	private float y;
 	private float left;
 	private float top;
 	private float width;
@@ -38,9 +40,11 @@ public class BoundingBox {
 	 */
 	public void setX(float x) {
 		left = x - width / 2;
+		this.x = x;
 	}
 	public void setY(float y) {
 		top = y - height / 2;
+		this.y = y;
 	}
 	
 	public void setWidth(float w) {
@@ -49,6 +53,9 @@ public class BoundingBox {
 	public void setHeight(float h) {
 		height = h * FUZZ;
 	}
+	
+	public float getX() { return x; }
+	public float getY() { return y; }
 	
 	public float getLeft() {
 		return left;

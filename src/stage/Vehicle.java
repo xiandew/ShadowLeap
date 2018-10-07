@@ -13,19 +13,21 @@ public abstract class Vehicle extends Sprite implements Movable {
 	/**
 	 * Initialise a vehicle with moving direction at (x, y).
 	 */
-	public Vehicle(String vehicleSrc, float x, float y, float speed, int direction) {
+	public Vehicle(String vehicleSrc, float x, float y,
+									float speed, int direction) {
 		super(vehicleSrc, x, y);
 		this.speed = speed;
 		this.direction = direction;
 	}
 	
-	public Vehicle(String vehicleSrc, float x, float y, float speed, int direction, String[] tags) {
+	public Vehicle(String vehicleSrc, float x, float y,
+									float speed, int direction, String[] tags) {
 		super(vehicleSrc, x, y, tags);
 		this.speed = speed;
 		this.direction = direction;
 	}
 	
-	public float validateX(float x) {
+	public float validX(float x) {
 		if(getDirection() == -1 && x < -getImage().getWidth() / 2 ||
 			getDirection() == 1 && x > getImage().getWidth() / 2 + App.SCREEN_WIDTH) {
 			
@@ -40,7 +42,7 @@ public abstract class Vehicle extends Sprite implements Movable {
 	 * @param delta Make sure the objects move at the same speed
 	 */
 	public void move(Input input, int delta) {
-		setX((float) validateX((getX() + getSpeed() * getDirection() * delta)));
+		setX((float) validX((getX() + getSpeed() * getDirection() * delta)));
 	}
 	
 	/**

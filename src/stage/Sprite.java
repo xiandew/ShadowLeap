@@ -47,16 +47,21 @@ public abstract class Sprite {
 	 * @return the x
 	 */
 	public float getX() { return x; }
-
-	/**
-	 * @param x the x to set
-	 */
-	public void setX(float x) { this.x = x; this.bounds.setX(x); }
 	
 	/**
 	 * @return the y
 	 */
 	public float getY() { return y; }
+	
+	/**
+	 * @return the bounds
+	 */
+	public BoundingBox getBounds() { return bounds; }
+
+	/**
+	 * @param x the x to set
+	 */
+	public void setX(float x) { this.x = x; this.bounds.setX(x); }
 
 	/**
 	 * @param y the y to set
@@ -73,7 +78,10 @@ public abstract class Sprite {
 	 * @param other The other sprite
 	 */
 	public boolean collides(Sprite other) {
-		return bounds.intersects(other.bounds);
+		return bounds.intersects(other.getBounds());
+	}
+	public boolean collides(BoundingBox other) {
+		return bounds.intersects(other);
 	}
 	
 	public boolean hasTag(String tag) {

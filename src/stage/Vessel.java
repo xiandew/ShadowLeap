@@ -18,7 +18,7 @@ public abstract class Vessel extends Vehicle {
 		
 		Player player = World.getPlayer();
 		if(collides(player)) {
-			player.setX(player.validateX(player.getX() + getSpeed() * getDirection() * delta));
+			player.setX(player.validX(player.getX() + getSpeed() * getDirection() * delta));
 			
 		}else if(player.getRidingVessel() == this) {
 			player.setRidingVessel(null);

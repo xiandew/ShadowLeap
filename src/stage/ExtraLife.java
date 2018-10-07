@@ -5,13 +5,14 @@ import java.util.Random;
 
 import org.newdawn.slick.Input;
 
+import utilities.BoundingBox;
 import utilities.Movable;
 
 /**
  * ExtraLife class for the game. Extends Sprite.
  * Repeatedly appears on a random log for 14 seconds after a random
  * chosen waiting time between 25 and 35 seconds. Moves one tile along
- * the log every 2 seconds. Destroys after 14-seconds appearing time
+ * the log every 2 seconds. Destroyed after 14-seconds appearing time
  * or if the player collides it and the player should get an extra life.
  */
 
@@ -51,7 +52,7 @@ public class ExtraLife extends Sprite implements Movable{
 		this(randomLog());
 	}
 	
-	public ExtraLife(Vehicle ridingLog) {
+	private ExtraLife(Vehicle ridingLog) {
 		super(EXTRALIFE_SRC, ridingLog.getX(), ridingLog.getY());
 		this.ridingLog = ridingLog;
 		this.createTime = System.nanoTime();
@@ -92,14 +93,16 @@ public class ExtraLife extends Sprite implements Movable{
 	 * @return the validated x.
 	 */
 	@Override
-	public float validateX(float x) {
-		float halfLogWidth = ridingLog.getImage().getWidth() / 2;
+	public float validX(float x) {
+		BoundingBox bounds = getBounds();
+		bounds.setX(x);
 		
-		if(x <= -halfLogWidth && direction == -1 || x >= halfLogWidth && direction == 1) {
-			direction *= (-1);
-			return x + 2 * direction * World.TILE_WIDTH;
+		if(ridingLog.collides(bounds)) {
+			return x;
 		}
-		return x;
+		
+		direction *= (-1);
+		return x + 2 * direction * World.TILE_WIDTH;
 	}
 
 	/**
@@ -112,7 +115,7 @@ public class ExtraLife extends Sprite implements Movable{
 		int appearTime = (int) ((System.nanoTime() - createTime) / TO_SEC - waitTime);
 		
 		if(isAppear && appearTime % PAUSE == 0 && appearTime != lastMoveTime){
-			relativeX = validateX(relativeX + direction * World.TILE_WIDTH);
+			relativeX = validX(relativeX + direction * World.TILE_WIDTH);
 			lastMoveTime = appearTime;
 		}
 		setX(ridingLog.getX() + relativeX);

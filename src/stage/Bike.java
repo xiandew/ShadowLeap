@@ -25,7 +25,7 @@ public class Bike extends Vehicle {
 	 * @return the same x. Place holder for override.
 	 */
 	@Override
-	public float validateX(float x) {
+	public float validX(float x) {
 		if(getDirection() == -1 && x <= LEFT_END ||
 			getDirection() == 1 && x >= RIGHT_END) {
 			
