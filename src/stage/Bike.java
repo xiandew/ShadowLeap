@@ -1,5 +1,12 @@
 package stage;
 
+/**
+ * Bike class for the game. Extends Vehicle. Labeled as hazard.
+ * Capable to bounce around when reaching the screen end.
+ * @param x The initial x coordinate.
+ * @param y The initial y coordinate.
+ * @param direction The initial moving direction.
+ */
 public class Bike extends Vehicle {
 	
 	private static final String BIKE_SRC = "assets/bike.png";
@@ -14,8 +21,8 @@ public class Bike extends Vehicle {
 	
 	/**
 	 * Reverse the direction if x reaches the end.
-	 * @param x Tell if it reaches the end.
-	 * @return the same x.
+	 * @param x Tell if the bike reaches the end.
+	 * @return the same x. Place holder for override.
 	 */
 	@Override
 	public float validateX(float x) {

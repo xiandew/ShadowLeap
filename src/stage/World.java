@@ -74,7 +74,7 @@ public class World {
 		}
 	}
 	
-	/** change the level data. Exit if the second level completed */
+	// change the level data. Exit if the second level completed
 	private void levelUp() {
 		currentLevel ++;
 		if(currentLevel > 1) {

@@ -1,5 +1,12 @@
 package stage;
 
+/**
+ * The Hole class for the game. Extends Sprite.
+ * Game over when all of the holes are filled.
+ * Each hole can only be filled once.
+ * @param x The x coordinate.
+ * @param y The y coordinate.
+ */
 public class Hole extends Sprite {
 	
 	private static final String FROG_SRC = "assets/frog.png";
@@ -14,6 +21,7 @@ public class Hole extends Sprite {
 	public Hole(float x, float y) {
 		super(FROG_SRC, x, y);
 	}
+	
 	
 	public void render() {
 		if(isfilled) {
@@ -33,13 +41,14 @@ public class Hole extends Sprite {
 	}
 	
 	public static void initialHoles() {
+		numFilledHoles = 0;
 		
 		for(int i=0; i<World.NUM_HOLES; i++) {
 			
 			int holeX = FIRST_HOLE_X + i * HOLES_SEPARATION;
 			World.getSprites().add(new Hole(holeX, HOLES_Y));
 		}
-		numFilledHoles = 0;
+		
 	}
 	
 	/**
