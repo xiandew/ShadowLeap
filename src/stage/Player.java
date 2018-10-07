@@ -119,6 +119,8 @@ public class Player extends Sprite implements Movable {
 		
 		for(Sprite sprite : World.getSprites()) {
 			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(bounds)) {
+				bounds.setX(getX());
+				bounds.setY(getY());
 				return true;
 			}
 		}
