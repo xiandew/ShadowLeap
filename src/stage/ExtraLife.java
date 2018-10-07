@@ -15,7 +15,6 @@ import utilities.Movable;
  * the log every 2 seconds. Destroyed after 14-seconds appearing time
  * or if the player collides it and the player should get an extra life.
  */
-
 public class ExtraLife extends Sprite implements Movable{
 	
 	private static final String EXTRALIFE_SRC = "assets/extralife.png";
