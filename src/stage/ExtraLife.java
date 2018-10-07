@@ -21,7 +21,7 @@ public class ExtraLife extends Sprite implements Movable{
 	private static final String EXTRALIFE_SRC = "assets/extralife.png";
 	
 	// Nanoseconds `divide` TO_SEC = seconds
-	public static final double TO_SEC = 1E9;
+	public static final long TO_SEC = (long) 1E9;
 	
 	// time in seconds
 	private static final int MIN_WAIT_TIME = 25;
@@ -30,22 +30,19 @@ public class ExtraLife extends Sprite implements Movable{
 	private static final int PAUSE = 2;
 		
 	private static Random random = new Random();
-	
-	// the random chosen log to ride
-	private Vehicle ridingLog;
-	
-	// x of the extra life relative to the center of the log
-	private float relativeX = 0;
-	
-	private int  waitTime;
+	// the create time
 	private long createTime;
-	
+	// the random wait time
+	private long waitTime;
 	// records the time that the extra life made the last move
 	private long lastMoveTime = 0;
-	
+	// the random chosen log to ride
+	private Vehicle ridingLog;
+	// x of the extra life relative to the center of the log
+	private float relativeX = 0;
 	// right: 1, left: -1
 	private int direction = 1;
-	
+	// appear after the wait time
 	private boolean isAppear = false;
 	
 	public ExtraLife() {
@@ -56,7 +53,8 @@ public class ExtraLife extends Sprite implements Movable{
 		super(EXTRALIFE_SRC, ridingLog.getX(), ridingLog.getY());
 		this.ridingLog = ridingLog;
 		this.createTime = System.nanoTime();
-		this.waitTime = MIN_WAIT_TIME + random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
+		this.waitTime = MIN_WAIT_TIME +
+						random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
 	}
 	
 	private static Vehicle randomLog() {
@@ -75,7 +73,7 @@ public class ExtraLife extends Sprite implements Movable{
 	 * reset the extra life when its lifetime passed.
 	 */
 	public void render() {
-		int timeSinceCreate = (int) ((System.nanoTime() - createTime) / TO_SEC);
+		long timeSinceCreate = (System.nanoTime() - createTime) / TO_SEC;
 		
 		if(timeSinceCreate >= waitTime) {
 			isAppear = true;
@@ -111,8 +109,8 @@ public class ExtraLife extends Sprite implements Movable{
 	 * @param delta Make sure the same speed with different FPS.
 	 */
 	@Override
-	public void move(Input input, int delta) {		
-		int appearTime = (int) ((System.nanoTime() - createTime) / TO_SEC - waitTime);
+	public void move(Input input, int delta) {
+		long appearTime = (System.nanoTime() - createTime) / TO_SEC - waitTime;
 		
 		if(isAppear && appearTime % PAUSE == 0 && appearTime != lastMoveTime){
 			relativeX = validX(relativeX + direction * World.TILE_WIDTH);
