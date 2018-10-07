@@ -36,8 +36,8 @@ public class Hole extends Sprite {
 			return;
 		}
 		isfilled = true;
+		numFilledHoles ++;
 		player.resetPosition();
-		numFilledHoles++;
 	}
 	
 	public static void initialHoles() {
