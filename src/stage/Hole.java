@@ -16,7 +16,7 @@ public class Hole extends Sprite {
 	private static final int FIRST_HOLE_X = 120;
 	
 	private static int numFilledHoles = 0;
-	private boolean filled = false;
+	private boolean isfilled = false;
 	
 	public Hole(float x, float y) {
 		super(FROG_SRC, x, y);
@@ -24,13 +24,19 @@ public class Hole extends Sprite {
 	
 	
 	public void render() {
-		if(filled) {
+		if(isfilled) {
 			super.render();
 		}
 	}
 	
 	public void setfilled() {
-		filled = true;
+		Player player = World.getPlayer();
+		if(isfilled) {
+			player.dieOnce();
+			return;
+		}
+		isfilled = true;
+		player.resetPosition();
 		numFilledHoles++;
 	}
 	
@@ -48,10 +54,7 @@ public class Hole extends Sprite {
 	/**
 	 * @return the number of filled holes
 	 */
-	public static int getNumFilledHoles() { return numFilledHoles; }
-	
-	/**
-	 * @return the filled
-	 */
-	public boolean isFilled() { return filled; }
+	public static int getNumFilledHoles() {
+		return numFilledHoles;
+	}
 }

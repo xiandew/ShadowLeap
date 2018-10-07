@@ -15,6 +15,7 @@ import utilities.Movable;
  * the log every 2 seconds. Destroyed after 14-seconds appearing time
  * or if the player collides it and the player should get an extra life.
  */
+
 public class ExtraLife extends Sprite implements Movable{
 	
 	private static final String EXTRALIFE_SRC = "assets/extralife.png";
@@ -33,11 +34,11 @@ public class ExtraLife extends Sprite implements Movable{
 	private long createTime;
 	// the random wait time
 	private long waitTime;
-	// records the time when the extra life made last move
+	// records the time that the extra life made the last move
 	private long lastMoveTime = 0;
 	// the random chosen log to ride
 	private Vehicle ridingLog;
-	// the relative x to the center of the log
+	// x of the extra life relative to the center of the log
 	private float relativeX = 0;
 	// right: 1, left: -1
 	private int direction = 1;

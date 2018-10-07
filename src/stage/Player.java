@@ -119,8 +119,6 @@ public class Player extends Sprite implements Movable {
 		
 		for(Sprite sprite : World.getSprites()) {
 			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(bounds)) {
-				bounds.setX(getX());
-				bounds.setY(getY());
 				return true;
 			}
 		}
@@ -138,7 +136,7 @@ public class Player extends Sprite implements Movable {
 		this.resetPosition();
 	}
 	
-	private void lifeUp() {
+	public void lifeUp() {
 		Player.lives++;
 	}
 	
