@@ -13,7 +13,7 @@ public class Bike extends Vehicle {
 	private static final int RIGHT_END = 1000;
 	
 	/**
-	 * Creates a bike with a starting point and the moving direction.
+	 * Create a bike with a starting point and the moving direction.
 	 * @param x The initial x coordinate.
 	 * @param y The initial y coordinate.
 	 * @param direction The moving direction.
@@ -23,7 +23,7 @@ public class Bike extends Vehicle {
 	}
 	
 	/**
-	 * Reverses the direction if x reaches the end.
+	 * Reverse the direction if x reaches the end.
 	 * @param x Tell if the bike reaches the end.
 	 * @return the same x. Place holder for override.
 	 */

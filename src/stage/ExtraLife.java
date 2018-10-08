@@ -44,16 +44,18 @@ public class ExtraLife extends Sprite implements Movable{
 	// appear after the wait time
 	private boolean isAppear = false;
 	
+	/**
+	 * Create an extra life with a random riding log and also set the random
+	 * waiting time for appearing on the log.
+	 */
 	public ExtraLife() {
 		this(randomLog());
 	}
-	
 	private ExtraLife(Vehicle ridingLog) {
 		super(EXTRALIFE_SRC, ridingLog.getX(), ridingLog.getY());
 		this.ridingLog = ridingLog;
 		this.createTime = System.nanoTime();
-		this.waitTime = MIN_WAIT_TIME +
-						random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
+		this.waitTime = MIN_WAIT_TIME + random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
 	}
 	
 	private static Vehicle randomLog() {
@@ -68,8 +70,8 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 	
 	/**
-	 * show up when the waiting time passed.
-	 * reset the extra life when its lifetime passed.
+	 * Show up when the waiting time passed.
+	 * Reset the extra life when its lifetime passed.
 	 */
 	public void render() {
 		long timeSinceCreate = (System.nanoTime() - createTime) / TO_SEC;
@@ -103,7 +105,7 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 
 	/**
-	 * move along the log every 2 seconds when appearing.
+	 * Move along the log every 2 seconds when appearing.
 	 * @param input Place holder for override.
 	 * @param delta Make sure the same speed with different FPS.
 	 */
@@ -119,7 +121,7 @@ public class ExtraLife extends Sprite implements Movable{
 	}
 	
 	/**
-	 * reset the extra life.
+	 * Reset the extra life.
 	 */
 	public static void resetExtraLife() {
 		ArrayList<Sprite> sprites = World.getSprites();

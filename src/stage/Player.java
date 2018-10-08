@@ -6,6 +6,7 @@ import org.newdawn.slick.SlickException;
 import utilities.BoundingBox;
 import utilities.Movable;
 
+
 public class Player extends Sprite implements Movable {
 	
 	private static final String PLAYER_SRC = "assets/frog.png";
@@ -37,7 +38,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * draws the player as well as the lives
+	 * draw the player as well as the lives
 	 */
 	public void render() {
 		super.render();
@@ -50,7 +51,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * controls the movement of the player.
+	 * control the movement of the player.
 	 * @param input Left, Right, Up, Down.
 	 * @param delta Make sure the same rate.
 	 */
@@ -69,7 +70,7 @@ public class Player extends Sprite implements Movable {
 	
 	
 	/**
-	 * checks the state of the player.
+	 * check the state of the player.
 	 */
 	private void checkPlayerState() {
 		
@@ -93,7 +94,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * validates x before moving.
+	 * validate x before moving.
 	 */
 	public float validX(float x) {
 		return (x <= World.TILE_WIDTH/2 ||
@@ -104,7 +105,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * prevents the player from solid tiles i.e. the bulldozers and the trees
+	 * prevent the player from solid tiles i.e. the bulldozers and the trees
 	 * @param input Left, Right, Up, Down.
 	 * @return whether or not it is going to crash a solid tile.
 	 */
@@ -137,7 +138,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * resets the player at the starting point.
+	 * reset the player at the starting point.
 	 */
 	public void resetPosition() {
 		this.setX(INITIAL_X);
@@ -145,7 +146,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * deducts the player's lives by one and reset its position.
+	 * deduct the player's lives by one and reset its position.
 	 */
 	public void dieOnce() {
 		Player.lives--;
@@ -153,7 +154,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * awards the player an extra life and reset the extra life.
+	 * award the player an extra life and reset the extra life.
 	 */
 	public void lifeUp() {
 		Player.lives++;
@@ -175,7 +176,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * makes an action corresponding to the contacting sprite.
+	 * take an action corresponding to the contacting sprite.
 	 * @param other The sprite that collides the player.
 	 */
 	public void onCollision(Sprite other) { 

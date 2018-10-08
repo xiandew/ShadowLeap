@@ -3,9 +3,6 @@ package stage;
 /**
  * The Hole class for the game. Extends Sprite.
  * Game over when all of the holes are filled.
- * Each hole can only be filled once.
- * @param x The x coordinate.
- * @param y The y coordinate.
  */
 public class Hole extends Sprite {
 	
@@ -18,6 +15,11 @@ public class Hole extends Sprite {
 	private static int numFilledHoles = 0;
 	private boolean isfilled = false;
 	
+	/**
+	 * Create a hole at the given point.
+	 * @param x The x coordinate.
+	 * @param y The y coordinate.
+	 */
 	public Hole(float x, float y) {
 		super(FROG_SRC, x, y);
 	}
