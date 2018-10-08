@@ -23,8 +23,8 @@ public class ExtraLife extends Sprite implements Movable{
 	public static final long TO_SEC = (long) 1E9;
 	
 	// time in seconds
-	private static final int MIN_WAIT_TIME = 5;
-	private static final int MAX_WAIT_TIME = 5;
+	private static final int MIN_WAIT_TIME = 25;
+	private static final int MAX_WAIT_TIME = 35;
 	private static final int LIFETIME = 14;
 	private static final int PAUSE = 2;
 		
