@@ -2,16 +2,27 @@ package stage;
 
 import org.newdawn.slick.Input;
 
+/**
+ * Abstract Vessel class for the game. Extends Vehicle.
+ */
 public abstract class Vessel extends Vehicle {
 	
-	public Vessel(String vehicleSrc, float x, float y, float speed, int direction) {
-		super(vehicleSrc, x, y, speed, direction);
+	/**
+	 * Create a vessel.
+	 * @param vesselSrc The image path of the vessel.
+	 * @param x The initial x coordinate.
+	 * @param y The initial y coordinate.
+	 * @param speed The speed of the vessel.
+	 * @param direction The moving direction.
+	 */
+	public Vessel(String vesselSrc, float x, float y, float speed, int direction) {
+		super(vesselSrc, x, y, speed, direction);
 	}
 	
 	/**
-	 * carry the player if the player is above of the vessel
-	 * @param input Pass it to super constructor as a place holder
-	 * @param delta Make sure the same rate with different FPS
+	 * Carry the player if the player is riding the vessel.
+	 * @param input Place holder to invoke super constructor.
+	 * @param delta Make sure the same speed with different FPS.
 	 */
 	public void move(Input input, int delta) {
 		super.move(input, delta);

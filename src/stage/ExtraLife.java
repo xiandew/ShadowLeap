@@ -9,7 +9,7 @@ import utilities.BoundingBox;
 import utilities.Movable;
 
 /**
- * ExtraLife class for the game. Extends Sprite.
+ * ExtraLife class for the game. Extends Sprite. Implements Movable.
  * Repeatedly appears on a random log for 14 seconds after a random
  * chosen waiting time between 25 and 35 seconds. Moves one tile along
  * the log every 2 seconds. Destroyed after 14-seconds appearing time
@@ -45,7 +45,7 @@ public class ExtraLife extends Sprite implements Movable{
 	private boolean isAppear = false;
 	
 	/**
-	 * Create an extra life with a random riding log and also set the random
+	 * Create an extra life at a random chosen log and also set the random
 	 * waiting time for appearing on the log.
 	 */
 	public ExtraLife() {

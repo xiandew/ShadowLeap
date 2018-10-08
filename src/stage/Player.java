@@ -6,7 +6,9 @@ import org.newdawn.slick.SlickException;
 import utilities.BoundingBox;
 import utilities.Movable;
 
-
+/**
+ * Player class for the game. Extends Sprite. Implements Movable.
+ */
 public class Player extends Sprite implements Movable {
 	
 	private static final String PLAYER_SRC = "assets/frog.png";
@@ -28,6 +30,9 @@ public class Player extends Sprite implements Movable {
 	// the vessel that the player is riding
 	private Sprite ridingVessel = null;
 	
+	/**
+	 * Create the player at the initial position with three initial lives.
+	 */
 	public Player() {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
 		try {
@@ -38,7 +43,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * draw the player as well as the lives
+	 * Draw the player as well as the lives.
 	 */
 	public void render() {
 		super.render();
@@ -51,7 +56,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * control the movement of the player.
+	 * Control the movement of the player.
 	 * @param input Left, Right, Up, Down.
 	 * @param delta Make sure the same rate.
 	 */
@@ -70,7 +75,7 @@ public class Player extends Sprite implements Movable {
 	
 	
 	/**
-	 * check the state of the player.
+	 * Check the state of the player.
 	 */
 	private void checkPlayerState() {
 		
@@ -94,18 +99,22 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * validate x before moving.
+	 * Validate x before moving.
+	 * @param x The x to validate.
+	 * @return the validated x.
 	 */
 	public float validX(float x) {
 		return (x <= World.TILE_WIDTH/2 ||
 				x >= App.SCREEN_WIDTH - World.TILE_WIDTH/2) ? getX() : x;
 	}
+	
+	// Validate y before moving
 	private float validY(float y) {
 		return (y <= 0 || y >= App.SCREEN_HEIGHT) ? getY() : y;
 	}
 	
 	/**
-	 * prevent the player from solid tiles i.e. the bulldozers and the trees
+	 * Prevent the player from solid tiles i.e. the bulldozers and the trees
 	 * @param input Left, Right, Up, Down.
 	 * @return whether or not it is going to crash a solid tile.
 	 */
@@ -138,7 +147,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * reset the player at the starting point.
+	 * Reset the player at the starting point.
 	 */
 	public void resetPosition() {
 		this.setX(INITIAL_X);
@@ -146,7 +155,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * deduct the player's lives by one and reset its position.
+	 * Deduct the player's lives by one and reset its position.
 	 */
 	public void dieOnce() {
 		Player.lives--;
@@ -154,7 +163,7 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * award the player an extra life and reset the extra life.
+	 * Award the player an extra life and reset the extra life.
 	 */
 	public void lifeUp() {
 		Player.lives++;
@@ -169,14 +178,14 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * set the riding vessel to null.
+	 * Set the riding vessel to null.
 	 */
 	public void resetRidingVessel() {
 		this.ridingVessel = null;
 	}
 	
 	/**
-	 * take an action corresponding to the contacting sprite.
+	 * Take an action corresponding to the contacting sprite.
 	 * @param other The sprite that collides the player.
 	 */
 	public void onCollision(Sprite other) { 

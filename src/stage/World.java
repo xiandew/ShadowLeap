@@ -7,18 +7,20 @@ import org.newdawn.slick.Input;
 
 import utilities.Movable;
 
+/**
+ * The World class for the game.
+ * Handles the renders and the updates of all objects
+ */
 public class World {
 	
-	/** tile width, in pixels */
+	// tile width, in pixels
 	public static final int TILE_WIDTH = 48;
-	
+	// number of holes
 	public static final int NUM_HOLES = 5;
-	
-	/** level data */
+	// level data
 	private static final String[] LEVEL_DATA =
 			new String[] {"assets/levels/0.lvl", "assets/levels/1.lvl"};
-	
-	/** level data indexes */
+	// level data indexes
 	private static final int INDEX_OBJECT    = 0;
 	private static final int INDEX_X         = 1;
 	private static final int INDEX_Y         = 2;
@@ -26,15 +28,21 @@ public class World {
 	
 	private int currentLevel = 0;
 	
-	/** all sprites */
+	// all sprites
 	private static ArrayList<Sprite> sprites;
-	
+	// the player
 	private static Player player;
 	
+	/**
+	 * Creates the world.
+	 */
 	public World() {
 		initialiseWorld();
 	}
 	
+	/**
+	 * Initialises all objects of the game.
+	 */
 	public void initialiseWorld() {
 		
 		readLevelData();
@@ -45,29 +53,38 @@ public class World {
 		sprites.add(new ExtraLife());
 	}
 	
+	/**
+	 * Update the movements of all movable sprites and detect collisions.
+	 * @param input The input to control the movement.
+	 * @param delta The delta makes sure the same speed with different FPS.
+	 */
 	public void update(Input input, int delta) {
 		
-		/** Update the movements of movable sprites */
+		// Update the movements of movable sprites
 		for(Sprite sprite : sprites) {
 			if(sprite instanceof Movable) {
 				((Movable) sprite).move(input, delta);
 			}
 		}
 		
-		/** check for collisions */
+		// check for collisions
 		for(Sprite sprite : sprites) {
 			if(sprite != player && sprite.collides(player)) {
 				player.onCollision(sprite);
 			}
 		}
 		
-		/** level up when all of the holes are filled */
+		// level up when all of the holes are filled
 		if(Hole.getNumFilledHoles() == NUM_HOLES) {
 			levelUp();
 		}
 		
 	}
 	
+	/**
+	 * Render all sprites.
+	 * @param g The Slick graphics object, used for drawing.
+	 */
 	public void render(Graphics g) {
 		for(Sprite sprite: sprites) {
 			sprite.render();
@@ -85,14 +102,14 @@ public class World {
 	}
 	
 	/**
-	 * @return the sprites
+	 * @return all sprites.
 	 */
 	public static ArrayList<Sprite> getSprites() {
 		return sprites;
 	}
 	
 	/**
-	 * @return the player
+	 * @return the player.
 	 */
 	public static Player getPlayer() {
 		return player;
