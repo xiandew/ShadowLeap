@@ -90,6 +90,21 @@ public class Player extends Sprite implements Movable {
 		checkPlayerState();
 	}
 	
+	/**
+	 * Validate x before moving.
+	 * @param x The x to validate.
+	 * @return the validated x.
+	 */
+	public float validX(float x) {
+		return (x < World.TILE_WIDTH/2 ||
+				x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) ? getX() : x;
+	}
+	
+	// Validate y before moving
+	private float validY(float y) {
+		return (y < World.TILE_WIDTH/2 ||
+				y > App.SCREEN_HEIGHT - World.TILE_WIDTH/2) ? getY() : y;
+	}
 	
 	/**
 	 * Check the state of the player.
@@ -113,21 +128,6 @@ public class Player extends Sprite implements Movable {
 				ridingVessel = sprite;
 			}
 		}
-	}
-	
-	/**
-	 * Validate x before moving.
-	 * @param x The x to validate.
-	 * @return the validated x.
-	 */
-	public float validX(float x) {
-		return (x <= World.TILE_WIDTH/2 ||
-				x >= App.SCREEN_WIDTH - World.TILE_WIDTH/2) ? getX() : x;
-	}
-	
-	// Validate y before moving
-	private float validY(float y) {
-		return (y <= 0 || y >= App.SCREEN_HEIGHT) ? getY() : y;
 	}
 	
 	/**
