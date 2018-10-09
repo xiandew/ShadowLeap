@@ -8,8 +8,9 @@ import utilities.BoundingBox;
  * Abstract super class of all objects in the game.
  */
 public abstract class Sprite {
-	// this is a defined constant to avoid typos
+	/** this is a defined constant to avoid typos */
 	public final static String HAZARD = "hazard";
+	/** this is a defined constant to avoid typos */
 	public final static String SOLID = "solid";
 	
 	private BoundingBox bounds;
@@ -68,11 +69,6 @@ public abstract class Sprite {
 	 * @return the y
 	 */
 	public float getY() { return y; }
-	
-	/**
-	 * @return the bounds
-	 */
-	public BoundingBox getBounds() { return bounds; }
 
 	/**
 	 * @param x the x to set
@@ -95,15 +91,7 @@ public abstract class Sprite {
 	 * @return whether this sprite collide the other.
 	 */
 	public boolean collides(Sprite other) {
-		return bounds.intersects(other.getBounds());
-	}
-	/**
-	 * Tell whether the sprite collides a bounding box.
-	 * @param other The bounding box to check.
-	 * @return whether this sprite collides the bounding box.
-	 */
-	public boolean collides(BoundingBox other) {
-		return bounds.intersects(other);
+		return bounds.intersects(other.bounds);
 	}
 	
 	/**

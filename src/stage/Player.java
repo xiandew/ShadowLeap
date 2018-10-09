@@ -3,7 +3,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import utilities.BoundingBox;
 import utilities.Movable;
 
 /**
@@ -18,17 +17,21 @@ public class Player extends Sprite implements Movable {
 	private static final int INITIAL_X = 512;
 	private static final int INITIAL_Y = 720;
 	
-	private static final int INITIAL_LIVES = 3;
+	private static final int INITIAL_NLIVES = 3;
 	private static final int INITIAL_LIVES_X = 24;
 	private static final int INITIAL_LIVES_Y = 744;
 	private static final int LIVES_SEPARATION = 32;
 	
 	// make lives static to keep it in the next Stage
-	private static int lives = INITIAL_LIVES;
-	private Image livesImg;
+	private static int nLives = INITIAL_NLIVES;
+	private Image livesImage;
 	
 	// the vessel that the player is riding
 	private Sprite ridingVessel = null;
+	
+	// record the previous position
+	private float prevX;
+	private float prevY;
 	
 	/**
 	 * Create the player at the initial position with three initial lives.
@@ -36,7 +39,7 @@ public class Player extends Sprite implements Movable {
 	public Player() {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
 		try {
-			this.livesImg = new Image(LIVES_SRC);
+			this.livesImage = new Image(LIVES_SRC);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -49,8 +52,8 @@ public class Player extends Sprite implements Movable {
 		super.render();
 		
 		// draw the lives
-		for(int i=0; i<lives; i++) {
-			livesImg.drawCentered(
+		for(int i=0; i<nLives; i++) {
+			livesImage.drawCentered(
 					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
 	}
@@ -63,30 +66,63 @@ public class Player extends Sprite implements Movable {
 	@Override
 	public void move(Input input, int delta) {
 		
-		if(collidesSolid(input)) {
-			return;
-		}
+		prevX = getX();
+		prevY = getY();
 		
-		this.setX(getBounds().getX());
-		this.setY(getBounds().getY());
+		if(input.isKeyPressed(Input.KEY_LEFT)) {
+			setX(validX(getX() - World.TILE_WIDTH));
+		}
+		if(input.isKeyPressed(Input.KEY_RIGHT)) {
+			setX(validX(getX() + World.TILE_WIDTH));
+		}
+		if(input.isKeyPressed(Input.KEY_UP)) {
+			setY(validY(getY() - World.TILE_WIDTH));
+		}
+		if(input.isKeyPressed(Input.KEY_DOWN)) {
+			setY(validY(getY() + World.TILE_WIDTH));
+		}
 		
 		checkPlayerState();
 	}
 	
+	/**
+	 * Validate x before moving.
+	 * @param x The x to validate.
+	 * @return the validated x.
+	 */
+	public float validX(float x) {
+		return (x < World.TILE_WIDTH/2 ||
+				x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) ? getX() : x;
+	}
+	
+	// Validate y before moving
+	private float validY(float y) {
+		return (y < World.TILE_WIDTH/2 ||
+				y > App.SCREEN_HEIGHT - World.TILE_WIDTH/2) ? getY() : y;
+	}
 	
 	/**
 	 * Check the state of the player.
 	 */
 	private void checkPlayerState() {
 		
+		// Prevent the player from solid tiles i.e. the bulldozers and the trees
+		for(Sprite sprite : World.getSprites()) {
+			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(this)) {
+				setX(prevX);
+				setY(prevY);
+				break;
+			}
+		}
+		
 		// exit if the player has no lives
-		if(Player.lives < 0) {
+		if(Player.nLives < 0) {
 			System.exit(0);
 		}
 		
 		// die once if it is off screen
-		if( this.getX() < World.TILE_WIDTH/2 ||
-			this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+		if( getX() < World.TILE_WIDTH/2 ||
+			getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			dieOnce();
 		}
 		
@@ -99,74 +135,26 @@ public class Player extends Sprite implements Movable {
 	}
 	
 	/**
-	 * Validate x before moving.
-	 * @param x The x to validate.
-	 * @return the validated x.
-	 */
-	public float validX(float x) {
-		return (x <= World.TILE_WIDTH/2 ||
-				x >= App.SCREEN_WIDTH - World.TILE_WIDTH/2) ? getX() : x;
-	}
-	
-	// Validate y before moving
-	private float validY(float y) {
-		return (y <= 0 || y >= App.SCREEN_HEIGHT) ? getY() : y;
-	}
-	
-	/**
-	 * Prevent the player from solid tiles i.e. the bulldozers and the trees
-	 * @param input Left, Right, Up, Down.
-	 * @return whether or not it is going to crash a solid tile.
-	 */
-	private boolean collidesSolid(Input input) {
-		
-		BoundingBox bounds = getBounds();
-		
-		if(input.isKeyPressed(Input.KEY_LEFT)) {
-			bounds.setX(validX(getX() - World.TILE_WIDTH));
-		}
-		if(input.isKeyPressed(Input.KEY_RIGHT)) {
-			bounds.setX(validX(getX() + World.TILE_WIDTH));
-		}
-		if(input.isKeyPressed(Input.KEY_UP)) {
-			bounds.setY(validY(getY() - World.TILE_WIDTH));
-		}
-		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			bounds.setY(validY(getY() + World.TILE_WIDTH));
-		}
-		
-		for(Sprite sprite : World.getSprites()) {
-			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(bounds)) {
-				bounds.setX(getX());
-				bounds.setY(getY());
-				return true;
-			}
-		}
-		return false;
-		
-	}
-	
-	/**
 	 * Reset the player at the starting point.
 	 */
 	public void resetPosition() {
-		this.setX(INITIAL_X);
-		this.setY(INITIAL_Y);
+		setX(INITIAL_X);
+		setY(INITIAL_Y);
 	}
 	
 	/**
 	 * Deduct the player's lives by one and reset its position.
 	 */
 	public void dieOnce() {
-		Player.lives--;
-		this.resetPosition();
+		Player.nLives--;
+		resetPosition();
 	}
 	
 	/**
 	 * Award the player an extra life and reset the extra life.
 	 */
 	public void lifeUp() {
-		Player.lives++;
+		Player.nLives++;
 		ExtraLife.resetExtraLife();
 	}
 	
@@ -181,7 +169,7 @@ public class Player extends Sprite implements Movable {
 	 * Set the riding vessel to null.
 	 */
 	public void resetRidingVessel() {
-		this.ridingVessel = null;
+		ridingVessel = null;
 	}
 	
 	/**
