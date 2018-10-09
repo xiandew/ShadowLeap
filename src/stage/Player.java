@@ -17,17 +17,21 @@ public class Player extends Sprite implements Movable {
 	private static final int INITIAL_X = 512;
 	private static final int INITIAL_Y = 720;
 	
-	private static final int INITIAL_LIVES = 3;
+	private static final int INITIAL_NLIVES = 3;
 	private static final int INITIAL_LIVES_X = 24;
 	private static final int INITIAL_LIVES_Y = 744;
 	private static final int LIVES_SEPARATION = 32;
 	
 	// make lives static to keep it in the next Stage
-	private static int lives = INITIAL_LIVES;
-	private Image livesImg;
+	private static int nLives = INITIAL_NLIVES;
+	private Image livesImage;
 	
 	// the vessel that the player is riding
 	private Sprite ridingVessel = null;
+	
+	// record the previous position
+	private float prevX;
+	private float prevY;
 	
 	/**
 	 * Create the player at the initial position with three initial lives.
@@ -35,7 +39,7 @@ public class Player extends Sprite implements Movable {
 	public Player() {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
 		try {
-			this.livesImg = new Image(LIVES_SRC);
+			this.livesImage = new Image(LIVES_SRC);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -48,8 +52,8 @@ public class Player extends Sprite implements Movable {
 		super.render();
 		
 		// draw the lives
-		for(int i=0; i<lives; i++) {
-			livesImg.drawCentered(
+		for(int i=0; i<nLives; i++) {
+			livesImage.drawCentered(
 					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
 	}
@@ -62,8 +66,8 @@ public class Player extends Sprite implements Movable {
 	@Override
 	public void move(Input input, int delta) {
 		
-		float prevX = getX();
-		float prevY = getY();
+		prevX = getX();
+		prevY = getY();
 		
 		if(input.isKeyPressed(Input.KEY_LEFT)) {
 			setX(validX(getX() - World.TILE_WIDTH));
@@ -76,15 +80,6 @@ public class Player extends Sprite implements Movable {
 		}
 		if(input.isKeyPressed(Input.KEY_DOWN)) {
 			setY(validY(getY() + World.TILE_WIDTH));
-		}
-		
-		// Prevent the player from solid tiles i.e. the bulldozers and the trees
-		for(Sprite sprite : World.getSprites()) {
-			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(this)) {
-				setX(prevX);
-				setY(prevY);
-				break;
-			}
 		}
 		
 		checkPlayerState();
@@ -111,14 +106,23 @@ public class Player extends Sprite implements Movable {
 	 */
 	private void checkPlayerState() {
 		
+		// Prevent the player from solid tiles i.e. the bulldozers and the trees
+		for(Sprite sprite : World.getSprites()) {
+			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(this)) {
+				setX(prevX);
+				setY(prevY);
+				break;
+			}
+		}
+		
 		// exit if the player has no lives
-		if(Player.lives < 0) {
+		if(Player.nLives < 0) {
 			System.exit(0);
 		}
 		
 		// die once if it is off screen
-		if( this.getX() < World.TILE_WIDTH/2 ||
-			this.getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
+		if( getX() < World.TILE_WIDTH/2 ||
+			getX() > App.SCREEN_WIDTH - World.TILE_WIDTH/2) {
 			dieOnce();
 		}
 		
@@ -134,23 +138,23 @@ public class Player extends Sprite implements Movable {
 	 * Reset the player at the starting point.
 	 */
 	public void resetPosition() {
-		this.setX(INITIAL_X);
-		this.setY(INITIAL_Y);
+		setX(INITIAL_X);
+		setY(INITIAL_Y);
 	}
 	
 	/**
 	 * Deduct the player's lives by one and reset its position.
 	 */
 	public void dieOnce() {
-		Player.lives--;
-		this.resetPosition();
+		Player.nLives--;
+		resetPosition();
 	}
 	
 	/**
 	 * Award the player an extra life and reset the extra life.
 	 */
 	public void lifeUp() {
-		Player.lives++;
+		Player.nLives++;
 		ExtraLife.resetExtraLife();
 	}
 	
@@ -165,7 +169,7 @@ public class Player extends Sprite implements Movable {
 	 * Set the riding vessel to null.
 	 */
 	public void resetRidingVessel() {
-		this.ridingVessel = null;
+		ridingVessel = null;
 	}
 	
 	/**
