@@ -61,6 +61,7 @@ public class App extends BasicGame {
             throws SlickException {
         AppGameContainer app = new AppGameContainer(new App());
         app.setShowFPS(false);
+        app.setTargetFrameRate(120);
         app.setDisplayMode(SCREEN_WIDTH, SCREEN_HEIGHT, false);
         app.start();
     }
