@@ -3,7 +3,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import utilities.BoundingBox;
 import utilities.Movable;
 
 /**
@@ -63,12 +62,30 @@ public class Player extends Sprite implements Movable {
 	@Override
 	public void move(Input input, int delta) {
 		
-		if(collidesSolid(input)) {
-			return;
+		float prevX = getX();
+		float prevY = getY();
+		
+		if(input.isKeyPressed(Input.KEY_LEFT)) {
+			setX(validX(getX() - World.TILE_WIDTH));
+		}
+		if(input.isKeyPressed(Input.KEY_RIGHT)) {
+			setX(validX(getX() + World.TILE_WIDTH));
+		}
+		if(input.isKeyPressed(Input.KEY_UP)) {
+			setY(validY(getY() - World.TILE_WIDTH));
+		}
+		if(input.isKeyPressed(Input.KEY_DOWN)) {
+			setY(validY(getY() + World.TILE_WIDTH));
 		}
 		
-		this.setX(getBounds().getX());
-		this.setY(getBounds().getY());
+		// Prevent the player from solid tiles i.e. the bulldozers and the trees
+		for(Sprite sprite : World.getSprites()) {
+			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(this)) {
+				setX(prevX);
+				setY(prevY);
+				break;
+			}
+		}
 		
 		checkPlayerState();
 	}
@@ -111,39 +128,6 @@ public class Player extends Sprite implements Movable {
 	// Validate y before moving
 	private float validY(float y) {
 		return (y <= 0 || y >= App.SCREEN_HEIGHT) ? getY() : y;
-	}
-	
-	/**
-	 * Prevent the player from solid tiles i.e. the bulldozers and the trees
-	 * @param input Left, Right, Up, Down.
-	 * @return whether or not it is going to crash a solid tile.
-	 */
-	private boolean collidesSolid(Input input) {
-		
-		BoundingBox bounds = getBounds();
-		
-		if(input.isKeyPressed(Input.KEY_LEFT)) {
-			bounds.setX(validX(getX() - World.TILE_WIDTH));
-		}
-		if(input.isKeyPressed(Input.KEY_RIGHT)) {
-			bounds.setX(validX(getX() + World.TILE_WIDTH));
-		}
-		if(input.isKeyPressed(Input.KEY_UP)) {
-			bounds.setY(validY(getY() - World.TILE_WIDTH));
-		}
-		if(input.isKeyPressed(Input.KEY_DOWN)) {
-			bounds.setY(validY(getY() + World.TILE_WIDTH));
-		}
-		
-		for(Sprite sprite : World.getSprites()) {
-			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(bounds)) {
-				bounds.setX(getX());
-				bounds.setY(getY());
-				return true;
-			}
-		}
-		return false;
-		
 	}
 	
 	/**

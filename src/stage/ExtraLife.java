@@ -2,10 +2,7 @@ package stage;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import org.newdawn.slick.Input;
-
-import utilities.BoundingBox;
 import utilities.Movable;
 
 /**
@@ -93,10 +90,9 @@ public class ExtraLife extends Sprite implements Movable{
 	 */
 	@Override
 	public float validX(float x) {
-		BoundingBox bounds = getBounds();
-		bounds.setX(ridingLog.getX() + x);
+		setX(ridingLog.getX() + x);
 		
-		if(ridingLog.collides(bounds)) {
+		if(ridingLog.collides(this)) {
 			return x;
 		}
 		
