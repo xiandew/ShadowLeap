@@ -13,9 +13,9 @@ import utilities.Movable;
  */
 public class World {
 	
-	// tile width, in pixels
+	/** tile width, in pixels */
 	public static final int TILE_WIDTH = 48;
-	// number of holes
+	/** number of holes */
 	public static final int NUM_HOLES = 5;
 	// level data
 	private static final String[] LEVEL_DATA =

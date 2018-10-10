@@ -8,8 +8,9 @@ import utilities.BoundingBox;
  * Abstract super class of all objects in the game.
  */
 public abstract class Sprite {
-	// this is a defined constant to avoid typos
+	/** this is a defined constant to avoid typos */
 	public final static String HAZARD = "hazard";
+	/** this is a defined constant to avoid typos */
 	public final static String SOLID = "solid";
 	
 	private BoundingBox bounds;
