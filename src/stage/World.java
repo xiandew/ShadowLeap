@@ -166,7 +166,6 @@ public class World {
 			int holeX = Hole.FIRST_HOLE_X + i * Hole.HOLES_SEPARATION;
 			sprites.add(new Hole(holeX, Hole.HOLES_Y));
 		}
-		
 		Hole.resetNumFilledHoles();
 	}
 	

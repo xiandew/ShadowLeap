@@ -164,7 +164,7 @@ public class Player extends Sprite implements Movable {
 			dieOnce();
 		}
 		
-		if(other instanceof ExtraLife && ((ExtraLife) other).collides(this)) {
+		if(other instanceof ExtraLife && other.collides(this)) {
 			lifeUp();
 		}
 	}
