@@ -5,9 +5,10 @@ package stage;
  * Game over when all of the holes are filled.
  */
 public class Hole extends Sprite {
+	/** number of holes */
+	public static final int NUM_HOLES = 5;
 	
 	private static final String FROG_SRC = "assets/frog.png";
-	
 	private static final int HOLES_SEPARATION = 192;
 	private static final int HOLES_Y = 48;
 	private static final int FIRST_HOLE_X = 120;
@@ -54,7 +55,7 @@ public class Hole extends Sprite {
 	 * Initialise unfilled holes.
 	 */
 	public static void initialHoles() {		
-		for(int i=0; i<World.NUM_HOLES; i++) {
+		for(int i=0; i<NUM_HOLES; i++) {
 			
 			int holeX = FIRST_HOLE_X + i * HOLES_SEPARATION;
 			World.getSprites().add(new Hole(holeX, HOLES_Y));

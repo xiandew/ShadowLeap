@@ -15,8 +15,7 @@ public class World {
 	
 	/** tile width, in pixels */
 	public static final int TILE_WIDTH = 48;
-	/** number of holes */
-	public static final int NUM_HOLES = 5;
+	
 	// level data
 	private static final String[] LEVEL_DATA =
 			new String[] {"assets/levels/0.lvl", "assets/levels/1.lvl"};
@@ -75,7 +74,7 @@ public class World {
 		}
 		
 		// level up when all of the holes are filled
-		if(Hole.getNumFilledHoles() == NUM_HOLES) {
+		if(Hole.getNumFilledHoles() == Hole.NUM_HOLES) {
 			levelUp();
 		}
 		
