@@ -26,13 +26,14 @@ public class Player extends Sprite implements Movable {
 	
 	// make lives static to keep it in the next Stage
 	private static int numLives = INITIAL_NLIVES;
-	private Image livesImage;
-	
+	// the image of one life
+	private Image lifeImage;
 	// the vessel that the player is riding
 	private Sprite ridingVessel;
 	// record the previous position
 	private float prevX;
 	private float prevY;
+	// all sprites
 	private ArrayList<Sprite> sprites;
 	
 	/**
@@ -43,7 +44,7 @@ public class Player extends Sprite implements Movable {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
 		this.sprites = sprites;
 		try {
-			this.livesImage = new Image(LIVES_SRC);
+			this.lifeImage = new Image(LIVES_SRC);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -57,8 +58,7 @@ public class Player extends Sprite implements Movable {
 		
 		// draw the lives
 		for(int i=0; i<numLives; i++) {
-			livesImage.drawCentered(
-					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
+			lifeImage.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
 	}
 	
@@ -105,9 +105,7 @@ public class Player extends Sprite implements Movable {
 				y > App.SCREEN_HEIGHT - World.TILE_WIDTH/2) ? getY() : y;
 	}
 	
-	/**
-	 * Check the state of the player.
-	 */
+	// Check the state of the player.
 	private void checkPlayerState() {
 		
 		// Prevent the player from solid tiles i.e. the bulldozers and the trees
@@ -134,28 +132,6 @@ public class Player extends Sprite implements Movable {
 		ridingVessel = null;
 	}
 	
-	/**
-	 * Reset the player at the starting point.
-	 */
-	public void resetPosition() {
-		setX(INITIAL_X);
-		setY(INITIAL_Y);
-	}
-	
-	/**
-	 * Deduct the player's lives by one and reset its position.
-	 */
-	public void dieOnce() {
-		numLives--;
-		resetPosition();
-	}
-	
-	/**
-	 * Award the player an extra life and reset the extra life.
-	 */
-	public void lifeUp() {
-		numLives++;
-	}
 	
 	@Override
 	public void onCollision(Sprite other) {
@@ -167,8 +143,33 @@ public class Player extends Sprite implements Movable {
 		if(other instanceof ExtraLife && other.collides(this)) {
 			lifeUp();
 		}
+		
+		if(other instanceof Hole) {
+			Hole hole = (Hole) other;
+			if(hole.isFilled()) {
+				dieOnce();
+			}else {
+				resetPosition();
+			}
+		}
 	}
 
+	// Deduct the player's lives by one and reset its position.
+	private void dieOnce() {
+		numLives--;
+		resetPosition();
+	}
+	
+	// Reset the player at the starting point.
+	private void resetPosition() {
+		setX(INITIAL_X);
+		setY(INITIAL_Y);
+	}
+	
+	private void lifeUp() {
+		numLives++;
+	}
+	
 	/**
 	 * @param ridingVessel the ridingVessel to set
 	 */

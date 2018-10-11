@@ -56,7 +56,7 @@ public class Turtles extends Vessel {
 		if(other instanceof Player) {
 			Player player = (Player) other;
 			if(isDiving) {
-				player.dieOnce();
+				player.setRidingVessel(null);
 			}else {
 				super.onCollision(player);
 			}
