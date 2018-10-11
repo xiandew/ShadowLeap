@@ -7,10 +7,9 @@ import utilities.Movable;
 
 /**
  * ExtraLife class for the game. Extends Sprite. Implements Movable.
- * Repeatedly appears on a random log for 14 seconds after a random
- * chosen waiting time between 25 and 35 seconds. Moves one tile along
- * the log every 2 seconds. Destroyed after 14-seconds appearing time
- * or if the player collides it and the player should get an extra life.
+ * The player gets an extra life if colliding it. It repeatedly appears
+ * on a random log after a random chosen waiting time and move along the log
+ * when appearing.
  */
 public class ExtraLife extends Sprite implements Movable{
 	
@@ -24,8 +23,10 @@ public class ExtraLife extends Sprite implements Movable{
 	private static final int MAX_WAIT_TIME = 35;
 	private static final int LIFETIME = 14;
 	private static final int PAUSE = 2;
-		
+	
 	private static Random random = new Random();
+	
+	private ArrayList<Sprite> sprites;
 	// the create time
 	private long createTime;
 	// the random wait time
@@ -44,9 +45,11 @@ public class ExtraLife extends Sprite implements Movable{
 	/**
 	 * Create an extra life at a random chosen log and also set the random
 	 * waiting time for appearing on the log.
+	 * @param sprites 
 	 */
-	public ExtraLife() {
-		this(randomLog());
+	public ExtraLife(ArrayList<Sprite> sprites) {
+		this(randomLog(sprites));
+		this.sprites = sprites;
 	}
 	private ExtraLife(Vehicle ridingLog) {
 		super(EXTRALIFE_SRC, ridingLog.getX(), ridingLog.getY());
@@ -55,10 +58,9 @@ public class ExtraLife extends Sprite implements Movable{
 		this.waitTime = MIN_WAIT_TIME + random.nextInt(MAX_WAIT_TIME - MIN_WAIT_TIME + 1);
 	}
 	
-	private static Vehicle randomLog() {
+	private static Vehicle randomLog(ArrayList<Sprite> sprites) {
 		ArrayList<Sprite> logs = new ArrayList<>();
-		
-		for(Sprite sprite : World.getSprites()) {
+		for(Sprite sprite : sprites) {
 			if(sprite instanceof Log || sprite instanceof LongLog) {
 				logs.add(sprite);
 			}
@@ -119,12 +121,11 @@ public class ExtraLife extends Sprite implements Movable{
 	/**
 	 * Reset the extra life.
 	 */
-	public static void resetExtraLife() {
-		ArrayList<Sprite> sprites = World.getSprites();
+	public void resetExtraLife() {
 		
 		for(Sprite sprite : sprites) {
 			if(sprite instanceof ExtraLife) {
-				sprites.set(sprites.indexOf(sprite), new ExtraLife());
+				sprites.set(sprites.indexOf(sprite), new ExtraLife(sprites));
 				break;
 			}
 		}
@@ -139,6 +140,16 @@ public class ExtraLife extends Sprite implements Movable{
 			return super.collides(other);
 		}
 		return false;
+	}
+	
+	/**
+	 * Reset when appearing and colliding the player.
+	 */
+	@Override
+	public void onCollision(Sprite other) {
+		if(isAppear && other instanceof Player) {
+			resetExtraLife();
+		}
 	}
 
 }

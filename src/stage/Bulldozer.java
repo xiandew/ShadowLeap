@@ -10,6 +10,8 @@ public class Bulldozer extends Vehicle {
 	private static final String BULLDOZER_SRC = "assets/Bulldozer.png";
 	private static final float SPEED = 0.05f;
 	
+	private int delta;
+	
 	/**
 	 * Create a bulldozer with a starting point and the moving direction.
 	 * @param x The initial x coordinate.
@@ -21,18 +23,20 @@ public class Bulldozer extends Vehicle {
 	}
 	
 	/**
-	 * Pushes the player if making contact with it
-	 * @param input Place holder for override.
-	 * @param delta Make sure the same speed with different FPS
+	 * Update the delta when moving.
 	 */
+	@Override
 	public void move(Input input, int delta) {
 		super.move(input, delta);
-		
-		Player player = World.getPlayer();
-		if(collides(player)) {
-			
-			player.setX(player.getX() + getSpeed() * getDirection() * delta);
-		}
+		this.delta = delta;
+	}
+	
+	/**
+	 * Pushes the other sprite when contacting it.
+	 */
+	@Override
+	public void onCollision(Sprite other) {
+		other.setX(other.getX() + getSpeed() * getDirection() * delta);
 	}
 }
 
