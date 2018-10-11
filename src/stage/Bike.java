@@ -25,7 +25,6 @@ public class Bike extends Vehicle {
 	/**
 	 * Reverse the direction if x reaches the end.
 	 * @param x Tell if the bike reaches the end.
-	 * @return the same x. Place holder for override.
 	 */
 	@Override
 	public float validX(float x) {

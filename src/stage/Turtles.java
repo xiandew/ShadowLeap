@@ -31,6 +31,7 @@ public class Turtles extends Vessel {
 	/**
 	 * Occasionally render the turtles object.
 	 */
+	@Override
 	public void render() {
 		long timeSinceAppear = (System.nanoTime() - lastAppearTime) / TO_SEC;
 		
@@ -56,7 +57,7 @@ public class Turtles extends Vessel {
 		if(other instanceof Player) {
 			Player player = (Player) other;
 			if(isDiving) {
-				player.dieOnce();
+				player.setRidingVessel(null);
 			}else {
 				super.onCollision(player);
 			}

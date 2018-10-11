@@ -22,9 +22,6 @@ public class Bulldozer extends Vehicle {
 		super(BULLDOZER_SRC, x, y, SPEED, direction, new String[] { Sprite.SOLID });
 	}
 	
-	/**
-	 * Update the delta when moving.
-	 */
 	@Override
 	public void move(Input input, int delta) {
 		super.move(input, delta);
@@ -32,11 +29,13 @@ public class Bulldozer extends Vehicle {
 	}
 	
 	/**
-	 * Pushes the other sprite when contacting it.
+	 * Pushes the player when contacting it.
 	 */
 	@Override
 	public void onCollision(Sprite other) {
-		other.setX(other.getX() + getSpeed() * getDirection() * delta);
+		if(other instanceof Player) {
+			other.setX(other.getX() + getSpeed() * getDirection() * delta);
+		}
 	}
 }
 

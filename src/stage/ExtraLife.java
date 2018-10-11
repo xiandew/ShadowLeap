@@ -26,26 +26,27 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	private static Random random = new Random();
 	
-	private ArrayList<Sprite> sprites;
 	// the create time
 	private long createTime;
 	// the random wait time
 	private long waitTime;
-	// records the time that the extra life made the last move
-	private long lastMoveTime = 0;
 	// the random chosen log to ride
 	private Vehicle ridingLog;
+	// records the time that the extra life made the last move
+	private long lastMoveTime = 0;
 	// x of the extra life relative to the center of the log
 	private float relativeX = 0;
 	// right: 1, left: -1
 	private int direction = 1;
 	// appear after the wait time
 	private boolean isAppear = false;
+	// all sprites
+	private ArrayList<Sprite> sprites;
 	
 	/**
-	 * Create an extra life at a random chosen log and also set the random
-	 * waiting time for appearing on the log.
-	 * @param sprites 
+	 * Create an extra life at a random chosen log and set the random
+	 * waiting time for appearing on the log later on.
+	 * @param sprites All sprites
 	 */
 	public ExtraLife(ArrayList<Sprite> sprites) {
 		this(randomLog(sprites));
@@ -70,25 +71,18 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	/**
 	 * Show up when the waiting time passed.
-	 * Reset the extra life when its lifetime passed.
 	 */
+	@Override
 	public void render() {
-		long timeSinceCreate = (System.nanoTime() - createTime) / TO_SEC;
 		
-		if(timeSinceCreate >= waitTime) {
+		if((System.nanoTime() - createTime) / TO_SEC >= waitTime) {
 			isAppear = true;
 			super.render();
-		}
-		
-		if(timeSinceCreate >= waitTime + LIFETIME) {
-			resetExtraLife();
 		}
 	}
 	
 	/**
 	 * Make sure the extra life move around the log.
-	 * @param x The x coordinate.
-	 * @return the validated x.
 	 */
 	@Override
 	public float validX(float x) {
@@ -104,18 +98,40 @@ public class ExtraLife extends Sprite implements Movable{
 
 	/**
 	 * Move along the log every 2 seconds when appearing.
-	 * @param input Place holder for override.
-	 * @param delta Make sure the same speed with different FPS.
 	 */
 	@Override
 	public void move(Input input, int delta) {
 		long appearTime = (System.nanoTime() - createTime) / TO_SEC - waitTime;
 		
+		// Reset the extra life when its lifetime passed.
+		if(appearTime >= LIFETIME) {
+			resetExtraLife();
+		}
+		
 		if(isAppear && appearTime % PAUSE == 0 && appearTime != lastMoveTime){
 			relativeX = validX(relativeX + direction * World.TILE_WIDTH);
 			lastMoveTime = appearTime;
 		}
+		
 		setX(ridingLog.getX() + relativeX);
+	}
+	
+	/**
+	 * Only collide-able when appearing.
+	 */
+	@Override
+	public boolean collides(Sprite other) {
+		return isAppear && super.collides(other);
+	}
+	
+	/**
+	 * Reset when colliding the player.
+	 */
+	@Override
+	public void onCollision(Sprite other) {
+		if(other instanceof Player) {
+			resetExtraLife();
+		}
 	}
 	
 	/**
@@ -128,27 +144,6 @@ public class ExtraLife extends Sprite implements Movable{
 				sprites.set(sprites.indexOf(sprite), new ExtraLife(sprites));
 				break;
 			}
-		}
-	}
-	
-	/**
-	 * Only collide-able when appearing.
-	 * @param other The other sprite to detect collision with.
-	 */
-	public boolean collides(Sprite other) {
-		if(isAppear) {
-			return super.collides(other);
-		}
-		return false;
-	}
-	
-	/**
-	 * Reset when appearing and colliding the player.
-	 */
-	@Override
-	public void onCollision(Sprite other) {
-		if(isAppear && other instanceof Player) {
-			resetExtraLife();
 		}
 	}
 

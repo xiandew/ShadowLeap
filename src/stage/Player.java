@@ -19,20 +19,21 @@ public class Player extends Sprite implements Movable {
 	private static final int INITIAL_X = 512;
 	private static final int INITIAL_Y = 720;
 	
-	private static final int INITIAL_NLIVES = 3;
-	private static final int INITIAL_LIVES_X = 24;
-	private static final int INITIAL_LIVES_Y = 744;
+	private static final int INITIAL_NLIVES   = 3;
+	private static final int INITIAL_LIVES_X  = 24;
+	private static final int INITIAL_LIVES_Y  = 744;
 	private static final int LIVES_SEPARATION = 32;
 	
 	// make lives static to keep it in the next Stage
 	private static int numLives = INITIAL_NLIVES;
-	private Image livesImage;
-	
+	// the image of one life
+	private Image lifeImage;
 	// the vessel that the player is riding
 	private Sprite ridingVessel;
 	// record the previous position
 	private float prevX;
 	private float prevY;
+	// all sprites
 	private ArrayList<Sprite> sprites;
 	
 	/**
@@ -43,7 +44,7 @@ public class Player extends Sprite implements Movable {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
 		this.sprites = sprites;
 		try {
-			this.livesImage = new Image(LIVES_SRC);
+			this.lifeImage = new Image(LIVES_SRC);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -52,20 +53,19 @@ public class Player extends Sprite implements Movable {
 	/**
 	 * Draw the player as well as the lives.
 	 */
+	@Override
 	public void render() {
 		super.render();
 		
 		// draw the lives
 		for(int i=0; i<numLives; i++) {
-			livesImage.drawCentered(
-					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
+			lifeImage.drawCentered(INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
 	}
 	
 	/**
 	 * Control the movement of the player.
 	 * @param input Left, Right, Up, Down.
-	 * @param delta Make sure the same rate.
 	 */
 	@Override
 	public void move(Input input, int delta) {
@@ -89,25 +89,17 @@ public class Player extends Sprite implements Movable {
 		checkPlayerState();
 	}
 	
-	/**
-	 * Validate x before moving.
-	 * @param x The x to validate.
-	 * @return the validated x.
-	 */
+	@Override
 	public float validX(float x) {
 		return (x < World.TILE_WIDTH/2 ||
 				x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) ? getX() : x;
 	}
 	
-	// Validate y before moving
 	private float validY(float y) {
 		return (y < World.TILE_WIDTH/2 ||
 				y > App.SCREEN_HEIGHT - World.TILE_WIDTH/2) ? getY() : y;
 	}
 	
-	/**
-	 * Check the state of the player.
-	 */
 	private void checkPlayerState() {
 		
 		// Prevent the player from solid tiles i.e. the bulldozers and the trees
@@ -134,28 +126,6 @@ public class Player extends Sprite implements Movable {
 		ridingVessel = null;
 	}
 	
-	/**
-	 * Reset the player at the starting point.
-	 */
-	public void resetPosition() {
-		setX(INITIAL_X);
-		setY(INITIAL_Y);
-	}
-	
-	/**
-	 * Deduct the player's lives by one and reset its position.
-	 */
-	public void dieOnce() {
-		numLives--;
-		resetPosition();
-	}
-	
-	/**
-	 * Award the player an extra life and reset the extra life.
-	 */
-	public void lifeUp() {
-		numLives++;
-	}
 	
 	@Override
 	public void onCollision(Sprite other) {
@@ -167,8 +137,32 @@ public class Player extends Sprite implements Movable {
 		if(other instanceof ExtraLife && other.collides(this)) {
 			lifeUp();
 		}
+		
+		if(other instanceof Hole) {
+			Hole hole = (Hole) other;
+			if(hole.isFilled()) {
+				dieOnce();
+			}else {
+				hole.setFilled();
+				resetPosition();
+			}
+		}
 	}
-
+	
+	private void dieOnce() {
+		numLives--;
+		resetPosition();
+	}
+	
+	private void resetPosition() {
+		setX(INITIAL_X);
+		setY(INITIAL_Y);
+	}
+	
+	private void lifeUp() {
+		numLives++;
+	}
+	
 	/**
 	 * @param ridingVessel the ridingVessel to set
 	 */

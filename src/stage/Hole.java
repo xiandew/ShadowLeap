@@ -18,7 +18,7 @@ public class Hole extends Sprite {
 	private static final String FROG_SRC = "assets/frog.png";
 	
 	private static int numFilledHoles = 0;
-	private boolean isfilled = false;
+	private boolean isFilled = false;
 	
 	/**
 	 * Create a hole at the given point.
@@ -32,26 +32,26 @@ public class Hole extends Sprite {
 	/**
 	 * render the frog in the hole when it has been filled.
 	 */
+	@Override
 	public void render() {
-		if(isfilled) {
+		if(isFilled()) {
 			super.render();
 		}
 	}
 	
 	/**
-	 * Fill a hole if it has not been filled when on collision with the player.
-	 * Otherwise the player loses a life.
+	 * @return the isFilled.
 	 */
-	public void onCollision(Sprite other) {
-		
-		Player player = (Player) other;
-		if(isfilled) {
-			player.dieOnce();
+	public boolean isFilled() { return isFilled; }
+	
+	/**
+	 * Fill a hole if it has not been filled.
+	 */
+	public void setFilled() {
+		if(isFilled) {
 			return;
 		}
-		isfilled = true;
-		player.resetPosition();
-		
+		isFilled = true;		
 		numFilledHoles ++;
 	}
 	
