@@ -28,9 +28,7 @@ public class World {
 	private int currentLevel = 0;
 	
 	// all sprites
-	private static ArrayList<Sprite> sprites;
-	// the player
-	private static Player player;
+	private ArrayList<Sprite> sprites;
 	
 	/**
 	 * Creates the world.
@@ -45,11 +43,9 @@ public class World {
 	public void initialiseWorld() {
 		
 		readLevelData();
-		Hole.initialHoles();
-		
-		player = new Player();
-		sprites.add(player);
-		sprites.add(new ExtraLife());
+		initialiseHoles();
+		sprites.add(new Player(sprites));
+		sprites.add(new ExtraLife(sprites));
 	}
 	
 	/**
@@ -66,10 +62,13 @@ public class World {
 			}
 		}
 		
-		// check for collisions
-		for(Sprite sprite : sprites) {
-			if(sprite != player && sprite.collides(player)) {
-				player.onCollision(sprite);
+		// loop over all pairs of sprites and test for intersection
+		for (Sprite sprite1: sprites) {
+			for (Sprite sprite2: sprites) {
+				if (sprite1 != sprite2
+						&& sprite1.collides(sprite2)) {
+					sprite1.onCollision(sprite2);
+				}
 			}
 		}
 		
@@ -98,20 +97,6 @@ public class World {
 		}
 		
 		initialiseWorld();
-	}
-	
-	/**
-	 * @return all sprites.
-	 */
-	public static ArrayList<Sprite> getSprites() {
-		return sprites;
-	}
-	
-	/**
-	 * @return the player.
-	 */
-	public static Player getPlayer() {
-		return player;
 	}
 	
 	private void readLevelData() {
@@ -173,4 +158,16 @@ public class World {
 		}
 		
 	}
+	
+	//Initialise unfilled holes.
+	private void initialiseHoles() {		
+		for(int i=0; i<Hole.NUM_HOLES; i++) {
+			
+			int holeX = Hole.FIRST_HOLE_X + i * Hole.HOLES_SEPARATION;
+			sprites.add(new Hole(holeX, Hole.HOLES_Y));
+		}
+		
+		Hole.resetNumFilledHoles();
+	}
+	
 }

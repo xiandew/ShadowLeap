@@ -7,6 +7,8 @@ import org.newdawn.slick.Input;
  */
 public abstract class Vessel extends Vehicle {
 	
+	private int delta;
+
 	/**
 	 * Create a vessel.
 	 * @param vesselSrc The image path of the vessel.
@@ -26,14 +28,15 @@ public abstract class Vessel extends Vehicle {
 	 */
 	public void move(Input input, int delta) {
 		super.move(input, delta);
+		this.delta = delta;
 		
-		Player player = World.getPlayer();
-		if(collides(player)) {
-			player.setX(player.validX(player.getX() + getSpeed() * getDirection() * delta));
+	}
+	public void onCollision(Sprite other) {
+		if(other instanceof Player) {
 			
-		}else if(player.getRidingVessel() == this) {
-			player.resetRidingVessel();
+			Player player = (Player) other;
+			player.setRidingVessel(this);
+			player.setX(player.validX(player.getX() + getSpeed() * getDirection() * delta));
 		}
 	}
-	
 }

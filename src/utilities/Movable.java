@@ -14,7 +14,7 @@ public interface Movable {
 	public float validX(float x);
 	
 	/**
-	 * Make a movement on the screen.
+	 * Move an object.
 	 * @param input The input to control the movement.
 	 * @param delta The delta makes sure the same speed with different FPS.
 	 */

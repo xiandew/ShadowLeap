@@ -95,6 +95,12 @@ public abstract class Sprite {
 	}
 	
 	/**
+	 * Reacts when making collisions with other sprite.
+	 * @param other The sprite that currently collides with.
+	 */
+	public void onCollision(Sprite other) { }
+	
+	/**
 	 * Tell whether the sprite has a specific tag.
 	 * @param tag The tag to check.
 	 * @return whether this sprite has the given tag.

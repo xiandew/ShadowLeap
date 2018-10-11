@@ -15,6 +15,7 @@ public class Turtles extends Vessel {
 	private static final int DIVE_TIME = 2;
 	
 	private static long lastAppearTime;
+	private boolean isDiving = false;
 	
 	/**
 	 * Create a turtles object with a starting point and the moving direction.
@@ -36,19 +37,29 @@ public class Turtles extends Vessel {
 		// shows above the water if the the breath time has not passed
 		if(timeSinceAppear < BREATH_TIME) {
 			super.render();
+			isDiving = false;
 			return;
-		
-		// when the turtle is to resurface
 		}else if(timeSinceAppear >= BREATH_TIME + DIVE_TIME) {
 			lastAppearTime = System.nanoTime();
-		
-		// when diving and the player is above of it
-		}else if(World.getPlayer().getRidingVessel() == this){
-			World.getPlayer().resetRidingVessel();
-			World.getPlayer().dieOnce();
+		}else{
+			isDiving = true;
 		}
 		
 	}
 	
-
+	/**
+	 * when diving and the player is above of it, player loses a life.
+	 */
+	@Override
+	public void onCollision(Sprite other) {
+		
+		if(other instanceof Player) {
+			Player player = (Player) other;
+			if(isDiving) {
+				player.dieOnce();
+			}else {
+				super.onCollision(player);
+			}
+		}
+	}
 }

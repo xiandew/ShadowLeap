@@ -1,4 +1,6 @@
 package stage;
+import java.util.ArrayList;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -23,21 +25,23 @@ public class Player extends Sprite implements Movable {
 	private static final int LIVES_SEPARATION = 32;
 	
 	// make lives static to keep it in the next Stage
-	private static int nLives = INITIAL_NLIVES;
+	private static int numLives = INITIAL_NLIVES;
 	private Image livesImage;
 	
 	// the vessel that the player is riding
-	private Sprite ridingVessel = null;
-	
+	private Sprite ridingVessel;
 	// record the previous position
 	private float prevX;
 	private float prevY;
+	private ArrayList<Sprite> sprites;
 	
 	/**
 	 * Create the player at the initial position with three initial lives.
+	 * @param sprites 
 	 */
-	public Player() {
+	public Player(ArrayList<Sprite> sprites) {
 		super(PLAYER_SRC, INITIAL_X, INITIAL_Y);
+		this.sprites = sprites;
 		try {
 			this.livesImage = new Image(LIVES_SRC);
 		} catch (SlickException e) {
@@ -52,7 +56,7 @@ public class Player extends Sprite implements Movable {
 		super.render();
 		
 		// draw the lives
-		for(int i=0; i<nLives; i++) {
+		for(int i=0; i<numLives; i++) {
 			livesImage.drawCentered(
 					INITIAL_LIVES_X + LIVES_SEPARATION * i, INITIAL_LIVES_Y);
 		}
@@ -107,7 +111,7 @@ public class Player extends Sprite implements Movable {
 	private void checkPlayerState() {
 		
 		// Prevent the player from solid tiles i.e. the bulldozers and the trees
-		for(Sprite sprite : World.getSprites()) {
+		for(Sprite sprite : sprites) {
 			if((sprite.hasTag(Sprite.SOLID)) && sprite.collides(this)) {
 				setX(prevX);
 				setY(prevY);
@@ -116,7 +120,7 @@ public class Player extends Sprite implements Movable {
 		}
 		
 		// exit if the player has no lives
-		if(Player.nLives < 0) {
+		if(Player.numLives < 0) {
 			System.exit(0);
 		}
 		
@@ -126,12 +130,8 @@ public class Player extends Sprite implements Movable {
 			dieOnce();
 		}
 		
-		// check whether the player is riding
-		for(Sprite sprite : World.getSprites()) {
-			if(sprite instanceof Vessel && collides(sprite)) {
-				ridingVessel = sprite;
-			}
-		}
+		// reset the riding vessel
+		ridingVessel = null;
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public class Player extends Sprite implements Movable {
 	 * Deduct the player's lives by one and reset its position.
 	 */
 	public void dieOnce() {
-		Player.nLives--;
+		numLives--;
 		resetPosition();
 	}
 	
@@ -154,40 +154,25 @@ public class Player extends Sprite implements Movable {
 	 * Award the player an extra life and reset the extra life.
 	 */
 	public void lifeUp() {
-		Player.nLives++;
-		ExtraLife.resetExtraLife();
+		numLives++;
 	}
 	
-	/**
-	 * @return the riding vessel.
-	 */
-	public Sprite getRidingVessel() {
-		return ridingVessel;
-	}
-	
-	/**
-	 * Set the riding vessel to null.
-	 */
-	public void resetRidingVessel() {
-		ridingVessel = null;
-	}
-	
-	/**
-	 * Take an action corresponding to the contacting sprite.
-	 * @param other The sprite that collides the player.
-	 */
-	public void onCollision(Sprite other) { 
-	
-		if(other.hasTag(Sprite.HAZARD) && getRidingVessel() == null) {
+	@Override
+	public void onCollision(Sprite other) {
+		
+		if(other.hasTag(Sprite.HAZARD) && ridingVessel == null) {
 			dieOnce();
 		}
 		
-		if(other instanceof ExtraLife) {
+		if(other instanceof ExtraLife && ((ExtraLife) other).collides(this)) {
 			lifeUp();
 		}
-		
-		if(other instanceof Hole) {
-			((Hole)other).setfilled();
-		}
+	}
+
+	/**
+	 * @param ridingVessel the ridingVessel to set
+	 */
+	public void setRidingVessel(Vessel ridingVessel) {
+		this.ridingVessel = ridingVessel;
 	}
 }

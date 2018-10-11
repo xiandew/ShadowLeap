@@ -45,9 +45,8 @@ public abstract class Vehicle extends Sprite implements Movable {
 	
 	/**
 	 * Make sure the vehicle wrap around the screen.
-	 * @param x The x to validate.
-	 * @return the validated x.
 	 */
+	@Override
 	public float validX(float x) {
 		if(getDirection() == -1 && x < -getImage().getWidth() / 2 ||
 			getDirection() == 1 && x > getImage().getWidth() / 2 + App.SCREEN_WIDTH) {
@@ -59,9 +58,8 @@ public abstract class Vehicle extends Sprite implements Movable {
 	
 	/**
 	 * Update the movement of a vehicle.
-	 * @param input Place holder
-	 * @param delta Make sure the objects move at the same speed.
 	 */
+	@Override
 	public void move(Input input, int delta) {
 		setX((float) validX((getX() + getSpeed() * getDirection() * delta)));
 	}
