@@ -21,16 +21,17 @@ public abstract class Vessel extends Vehicle {
 		super(vesselSrc, x, y, speed, direction);
 	}
 	
-	/**
-	 * Carry the player if the player is riding the vessel.
-	 * @param input Place holder to invoke super constructor.
-	 * @param delta Make sure the same speed with different FPS.
-	 */
+	@Override
 	public void move(Input input, int delta) {
 		super.move(input, delta);
 		this.delta = delta;
 		
 	}
+	
+	/**
+	 * Carry the player if the player is riding the vessel.
+	 */
+	@Override
 	public void onCollision(Sprite other) {
 		if(other instanceof Player) {
 			

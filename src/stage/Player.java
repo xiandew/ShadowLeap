@@ -19,9 +19,9 @@ public class Player extends Sprite implements Movable {
 	private static final int INITIAL_X = 512;
 	private static final int INITIAL_Y = 720;
 	
-	private static final int INITIAL_NLIVES = 3;
-	private static final int INITIAL_LIVES_X = 24;
-	private static final int INITIAL_LIVES_Y = 744;
+	private static final int INITIAL_NLIVES   = 3;
+	private static final int INITIAL_LIVES_X  = 24;
+	private static final int INITIAL_LIVES_Y  = 744;
 	private static final int LIVES_SEPARATION = 32;
 	
 	// make lives static to keep it in the next Stage
@@ -53,6 +53,7 @@ public class Player extends Sprite implements Movable {
 	/**
 	 * Draw the player as well as the lives.
 	 */
+	@Override
 	public void render() {
 		super.render();
 		
@@ -65,7 +66,6 @@ public class Player extends Sprite implements Movable {
 	/**
 	 * Control the movement of the player.
 	 * @param input Left, Right, Up, Down.
-	 * @param delta Make sure the same rate.
 	 */
 	@Override
 	public void move(Input input, int delta) {
@@ -89,23 +89,17 @@ public class Player extends Sprite implements Movable {
 		checkPlayerState();
 	}
 	
-	/**
-	 * Validate x before moving.
-	 * @param x The x to validate.
-	 * @return the validated x.
-	 */
+	@Override
 	public float validX(float x) {
 		return (x < World.TILE_WIDTH/2 ||
 				x > App.SCREEN_WIDTH - World.TILE_WIDTH/2) ? getX() : x;
 	}
 	
-	// Validate y before moving
 	private float validY(float y) {
 		return (y < World.TILE_WIDTH/2 ||
 				y > App.SCREEN_HEIGHT - World.TILE_WIDTH/2) ? getY() : y;
 	}
 	
-	// Check the state of the player.
 	private void checkPlayerState() {
 		
 		// Prevent the player from solid tiles i.e. the bulldozers and the trees
@@ -153,14 +147,12 @@ public class Player extends Sprite implements Movable {
 			}
 		}
 	}
-
-	// Deduct the player's lives by one and reset its position.
+	
 	private void dieOnce() {
 		numLives--;
 		resetPosition();
 	}
 	
-	// Reset the player at the starting point.
 	private void resetPosition() {
 		setX(INITIAL_X);
 		setY(INITIAL_Y);

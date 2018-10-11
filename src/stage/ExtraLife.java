@@ -83,8 +83,6 @@ public class ExtraLife extends Sprite implements Movable{
 	
 	/**
 	 * Make sure the extra life move around the log.
-	 * @param x The x coordinate.
-	 * @return the validated x.
 	 */
 	@Override
 	public float validX(float x) {
@@ -100,8 +98,6 @@ public class ExtraLife extends Sprite implements Movable{
 
 	/**
 	 * Move along the log every 2 seconds when appearing.
-	 * @param input Place holder for override.
-	 * @param delta Make sure the same speed with different FPS.
 	 */
 	@Override
 	public void move(Input input, int delta) {
