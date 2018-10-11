@@ -65,8 +65,7 @@ public class World {
 		// loop over all pairs of sprites and test for intersection
 		for (Sprite sprite1: sprites) {
 			for (Sprite sprite2: sprites) {
-				if (sprite1 != sprite2
-						&& sprite1.collides(sprite2)) {
+				if (sprite1 != sprite2 && sprite1.collides(sprite2)) {
 					sprite1.onCollision(sprite2);
 				}
 			}
