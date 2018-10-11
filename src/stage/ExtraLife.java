@@ -7,10 +7,9 @@ import utilities.Movable;
 
 /**
  * ExtraLife class for the game. Extends Sprite. Implements Movable.
- * Repeatedly appears on a random log for 14 seconds after a random
- * chosen waiting time between 25 and 35 seconds. Moves one tile along
- * the log every 2 seconds. Destroyed after 14-seconds appearing time
- * or if the player collides it and the player should get an extra life.
+ * The player gets an extra life if colliding it. It repeatedly appears
+ * on a random log after a random chosen waiting time and move along the log
+ * when appearing.
  */
 public class ExtraLife extends Sprite implements Movable{
 	
