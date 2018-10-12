@@ -25,7 +25,7 @@ public class World {
 	private static final int INDEX_Y         = 2;
 	private static final int INDEX_DIRECTION = 3;
 	
-	private int currentLevel = 1;
+	private int currentLevel = 0;
 	
 	// all sprites
 	private ArrayList<Sprite> sprites;
