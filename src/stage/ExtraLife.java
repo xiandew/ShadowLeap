@@ -129,7 +129,9 @@ public class ExtraLife extends Sprite implements Movable{
 	 */
 	@Override
 	public void onCollision(Sprite other) {
-		resetExtraLife();
+		if(other instanceof Player) {
+			resetExtraLife();
+		}
 	}
 	
 	/**
