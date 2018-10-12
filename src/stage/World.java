@@ -43,9 +43,9 @@ public class World {
 	public void initialiseWorld() {
 		
 		readLevelData();
+		initialiseHoles();
 		sprites.add(new Player(sprites));
 		sprites.add(new ExtraLife(sprites));
-		initialiseHoles();
 	}
 	
 	/**
