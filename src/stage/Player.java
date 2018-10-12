@@ -143,6 +143,7 @@ public class Player extends Sprite implements Movable {
 			if(hole.isFilled()) {
 				dieOnce();
 			}else {
+				hole.setFilled();
 				resetPosition();
 			}
 		}

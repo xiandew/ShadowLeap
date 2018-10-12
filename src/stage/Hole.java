@@ -32,6 +32,7 @@ public class Hole extends Sprite {
 	/**
 	 * render the frog in the hole when it has been filled.
 	 */
+	@Override
 	public void render() {
 		if(isFilled()) {
 			super.render();
@@ -39,23 +40,20 @@ public class Hole extends Sprite {
 	}
 	
 	/**
-	 * Fill a hole if it has not been filled when on collision with the player.
-	 * Otherwise the player loses a life.
-	 */
-	public void onCollision(Sprite other) {
-		if(other instanceof Player) {
-			if(isFilled) {
-				return;
-			}
-			isFilled = true;		
-			numFilledHoles ++;
-		}
-	}
-	
-	/**
-	 * @return the isFilled
+	 * @return the isFilled.
 	 */
 	public boolean isFilled() { return isFilled; }
+	
+	/**
+	 * Fill a hole if it has not been filled.
+	 */
+	public void setFilled() {
+		if(isFilled) {
+			return;
+		}
+		isFilled = true;		
+		numFilledHoles ++;
+	}
 	
 	/**
 	 * @return the number of filled holes.
