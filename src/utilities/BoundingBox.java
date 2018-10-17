@@ -10,7 +10,7 @@ import org.newdawn.slick.Image;
  * The BoundingBox class for the game. Used to detect collisions.
  */
 public class BoundingBox {
-	private static final float FUZZ = 0.95f;
+	private static final float FUZZ = 1f;
 	
 	private float left;
 	private float top;
@@ -123,9 +123,9 @@ public class BoundingBox {
 	 * @return whether this bounding box collides the other.
 	 */
 	public boolean intersects(BoundingBox other) {
-		return !(other.left > getRight()
-			  || other.getRight() < left
-			  || other.top > getBottom()
-			  || other.getBottom() < top);
+		return !(other.left >= getRight()
+			  || other.getRight() <= left
+			  || other.top >= getBottom()
+			  || other.getBottom() <= top);
 	}
 }
